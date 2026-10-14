@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "database-atlas-boundary",
+  "title": "MongoDB connection & Atlas boundary",
+  "subtitle": "Verified connection code; hosted cluster topology explicitly unverified",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Database operation requested",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Server code requests a shared MongoDB connection.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 30,
+          "symbol": "export async function mongo"
+        }
+      ],
+      "id": "database-atlas-boundary-n0"
+    },
+    {
+      "label": "MONGODB_URI supplied?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Absence rejects live operations; no credentials are displayed.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 31,
+          "symbol": "MongoDB is not configured"
+        }
+      ],
+      "id": "database-atlas-boundary-n1"
+    },
+    {
+      "label": "Shared native-driver pool",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "MongoClient.connect, maxPoolSize 10 and serverSelectionTimeoutMS 6000 are actual code settings.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 34,
+          "symbol": "maxPoolSize: 10"
+        }
+      ],
+      "id": "database-atlas-boundary-n2"
+    },
+    {
+      "label": "Hosted cluster / Atlas boundary",
+      "category": "External",
+      "kind": "External API",
+      "status": "Unverified",
+      "description": "MongoDB hosting, Atlas cluster tier, region, replica placement and network access rules cannot be inferred from the connection code.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 33,
+          "symbol": "new MongoClient"
+        }
+      ],
+      "id": "database-atlas-boundary-n3"
+    },
+    {
+      "label": "Database selection and transaction",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "MONGODB_DB override or ovia default; writes can share ClientSession.withTransaction.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 103,
+          "symbol": "export async function transaction"
+        }
+      ],
+      "id": "database-atlas-boundary-n4"
+    },
+    {
+      "label": "Repository result returned",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Stored records or a surfaced database error return to business services.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "database-atlas-boundary-n5"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-atlas-boundary-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-atlas-boundary-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "database-atlas-boundary-e0",
+      "source": "database-atlas-boundary-n0",
+      "target": "database-atlas-boundary-n1"
+    },
+    {
+      "id": "database-atlas-boundary-e1",
+      "source": "database-atlas-boundary-n1",
+      "target": "database-atlas-boundary-n2",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "database-atlas-boundary-e2",
+      "source": "database-atlas-boundary-n2",
+      "target": "database-atlas-boundary-n3"
+    },
+    {
+      "id": "database-atlas-boundary-e3",
+      "source": "database-atlas-boundary-n3",
+      "target": "database-atlas-boundary-n4"
+    },
+    {
+      "id": "database-atlas-boundary-e4",
+      "source": "database-atlas-boundary-n4",
+      "target": "database-atlas-boundary-n5"
+    },
+    {
+      "id": "database-atlas-boundary-fail-database-atlas-boundary-n1",
+      "source": "database-atlas-boundary-n1",
+      "target": "database-atlas-boundary-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "database-atlas-boundary-fail-end",
+      "source": "database-atlas-boundary-error",
+      "target": "database-atlas-boundary-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "The hosted-cluster node is a trust boundary, not proof of an Atlas deployment. No private network, replica topology or production configuration has been invented."
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "architecture-master",
+  "title": "Master system architecture",
+  "subtitle": "Storefront, route handlers, MongoDB, integrations and owner operations",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Customer browser",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Next.js storefront shell with customer-facing pages and client components.",
+      "evidence": [
+        {
+          "file": "src/app/layout.tsx",
+          "line": 1
+        }
+      ],
+      "id": "architecture-master-n0"
+    },
+    {
+      "label": "Storefront and account",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Catalog, bag, checkout and account state coordinate client requests.",
+      "evidence": [
+        {
+          "file": "src/components/store-provider.tsx",
+          "line": 1
+        }
+      ],
+      "id": "architecture-master-n1"
+    },
+    {
+      "label": "Next.js API handlers",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "86 route files, including explicit dispatch branches and provider webhooks.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 42,
+          "symbol": "export async function GET"
+        }
+      ],
+      "endpoint": "/api/* and /api/v1/*",
+      "id": "architecture-master-n2"
+    },
+    {
+      "label": "Server business services",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Commerce, accounts, logistics, mail, support, marketing and reports.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 115,
+          "symbol": "export async function createOrder"
+        }
+      ],
+      "id": "architecture-master-n3"
+    },
+    {
+      "label": "Native MongoDB repository",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "MongoClient pool; repository access and withTransaction for coordinated writes.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "architecture-master-n4"
+    },
+    {
+      "label": "External service adapters",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Razorpay, PayPal sandbox, Delhivery, Resend, Algolia, OAuth, Gmail, translation and DeepSeek. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 88,
+          "symbol": "export async function getAdminIntegrationsList"
+        }
+      ],
+      "id": "architecture-master-n5"
+    },
+    {
+      "label": "State and response rendered",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Safe route responses update customer and owner views.",
+      "evidence": [
+        {
+          "file": "src/components/store-provider.tsx",
+          "line": 1
+        }
+      ],
+      "id": "architecture-master-n6"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-master-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-master-failure-end"
+    },
+    {
+      "label": "Owner control center",
+      "category": "Admin",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Server-protected owner operations and API-specific authorization.",
+      "evidence": [
+        {
+          "file": "src/components/admin/admin-shell.tsx",
+          "line": 1
+        }
+      ],
+      "id": "master-owner"
+    }
+  ],
+  "edges": [
+    {
+      "id": "architecture-master-e0",
+      "source": "architecture-master-n0",
+      "target": "architecture-master-n1"
+    },
+    {
+      "id": "architecture-master-e1",
+      "source": "architecture-master-n1",
+      "target": "architecture-master-n2"
+    },
+    {
+      "id": "architecture-master-e2",
+      "source": "architecture-master-n2",
+      "target": "architecture-master-n3"
+    },
+    {
+      "id": "architecture-master-e3",
+      "source": "architecture-master-n3",
+      "target": "architecture-master-n4"
+    },
+    {
+      "id": "architecture-master-e4",
+      "source": "architecture-master-n4",
+      "target": "architecture-master-n5"
+    },
+    {
+      "id": "architecture-master-e5",
+      "source": "architecture-master-n5",
+      "target": "architecture-master-n6"
+    },
+    {
+      "id": "architecture-master-fail-architecture-master-n2",
+      "source": "architecture-master-n2",
+      "target": "architecture-master-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "architecture-master-fail-end",
+      "source": "architecture-master-error",
+      "target": "architecture-master-failure-end",
+      "failure": true
+    },
+    {
+      "id": "master-owner-start",
+      "source": "architecture-master-n0",
+      "target": "master-owner",
+      "label": "Owner session"
+    },
+    {
+      "id": "master-owner-api",
+      "source": "master-owner",
+      "target": "architecture-master-n2",
+      "label": "/api/admin/*"
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "MongoDB Atlas deployment topology is Unverified. The code proves a MongoDB connection and database selection, not specific cluster tiers or regions."
+  ]
+}

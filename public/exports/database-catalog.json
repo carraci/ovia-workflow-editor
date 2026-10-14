@@ -1,0 +1,376 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "database-catalog",
+  "title": "Catalog & stock data",
+  "subtitle": "Collection boundaries and source-backed data references",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Domain persistence request",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Application services query the collections listed in this domain.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "database-catalog-n0"
+    },
+    {
+      "label": "products",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection products; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/product-taxonomy/route.ts",
+          "line": 30,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 598,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 784,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 791,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 822,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 957,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 964,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 997,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1001,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1006,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1042,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1224,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1235,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/ai-copilot.ts",
+          "line": 43,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 93,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 185,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 265,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 266,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 267,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 242,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-catalog-n1"
+    },
+    {
+      "label": "categories",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection categories; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/product-taxonomy/route.ts",
+          "line": 14,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1040,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1114,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1151,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1180,
+          "symbol": "collection"
+        }
+      ],
+      "id": "database-catalog-n2"
+    },
+    {
+      "label": "inventory",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection inventory; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/orders/[id]/return/route.ts",
+          "line": 77,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1206,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1228,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1233,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/ai-copilot.ts",
+          "line": 65,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 107,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 163,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 304,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 306,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 186,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 530,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 539,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 177,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 182,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 344,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 349,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 247,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-catalog-n3"
+    },
+    {
+      "label": "inventoryMovements",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection inventoryMovements; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1206,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1236,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-catalog-n4"
+    },
+    {
+      "label": "Stored domain response",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Return persisted domain data to the service.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 100,
+          "symbol": "export async function readRepository"
+        }
+      ],
+      "id": "database-catalog-n5"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-catalog-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-catalog-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "database-catalog-e0",
+      "source": "database-catalog-n0",
+      "target": "database-catalog-n1"
+    },
+    {
+      "id": "database-catalog-e1",
+      "source": "database-catalog-n1",
+      "target": "database-catalog-n2"
+    },
+    {
+      "id": "database-catalog-e2",
+      "source": "database-catalog-n2",
+      "target": "database-catalog-n3"
+    },
+    {
+      "id": "database-catalog-e3",
+      "source": "database-catalog-n3",
+      "target": "database-catalog-n4"
+    },
+    {
+      "id": "database-catalog-e4",
+      "source": "database-catalog-n4",
+      "target": "database-catalog-n5"
+    },
+    {
+      "id": "database-catalog-fail-database-catalog-n0",
+      "source": "database-catalog-n0",
+      "target": "database-catalog-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "database-catalog-fail-end",
+      "source": "database-catalog-error",
+      "target": "database-catalog-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "inventory.id -> variants[].sku (src/server/db.ts:210)",
+    "carts.lines[].sku -> variants[].sku (src/server/commerce.ts:25)",
+    "inventoryMovements.sku -> inventory.id (src/server/admin-service.ts:1236)"
+  ]
+}

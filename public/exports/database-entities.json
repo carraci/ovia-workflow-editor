@@ -1,0 +1,875 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "database-entities",
+  "title": "Entity relationships",
+  "subtitle": "Actual user, catalog, checkout, support and order reference fields",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Read application entities",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Entity and reference view derived from actual collection access and reference fields.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "database-entities-n0"
+    },
+    {
+      "label": "sessions",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in sessions. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/security/route.ts",
+          "line": 17,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/security/route.ts",
+          "line": 25,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/security/route.ts",
+          "line": 25,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 77,
+          "symbol": "find"
+        }
+      ],
+      "id": "database-entities-n1"
+    },
+    {
+      "label": "users",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in users. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/customers/route.ts",
+          "line": 59,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/customers/route.ts",
+          "line": 84,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 30,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 32,
+          "symbol": "find"
+        }
+      ],
+      "id": "database-entities-n2"
+    },
+    {
+      "label": "addresses",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in addresses. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 19,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 29,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 32,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 44,
+          "symbol": "get"
+        }
+      ],
+      "id": "database-entities-n3"
+    },
+    {
+      "label": "orders",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in orders. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/orders/[id]/document/route.ts",
+          "line": 16,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/email/route.ts",
+          "line": 14,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/return-request/route.ts",
+          "line": 15,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/route.ts",
+          "line": 27,
+          "symbol": "get"
+        }
+      ],
+      "id": "database-entities-n4"
+    },
+    {
+      "label": "checkoutSessions",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in checkoutSessions. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 136,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 191,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 312,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 313,
+          "symbol": "remove"
+        }
+      ],
+      "id": "database-entities-n5"
+    },
+    {
+      "label": "inventory",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in inventory. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/orders/[id]/return/route.ts",
+          "line": 77,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1206,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1228,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1233,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-entities-n6"
+    },
+    {
+      "label": "products",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in products. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/product-taxonomy/route.ts",
+          "line": 30,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 598,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 784,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 791,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-entities-n7"
+    },
+    {
+      "label": "carts",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in carts. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 7,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 9,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 20,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 21,
+          "symbol": "remove"
+        }
+      ],
+      "id": "database-entities-n8"
+    },
+    {
+      "label": "reviews",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in reviews. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 63,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 112,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 144,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 215,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-entities-n9"
+    },
+    {
+      "label": "tickets",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in tickets. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 14,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 46,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 51,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 171,
+          "symbol": "find"
+        }
+      ],
+      "id": "database-entities-n10"
+    },
+    {
+      "label": "returns",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in returns. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1401,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1437,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-entities-n11"
+    },
+    {
+      "label": "campaigns",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in campaigns. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 11,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 45,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 178,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-entities-n12"
+    },
+    {
+      "label": "campaignEvents",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in campaignEvents. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 20,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 50,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-entities-n13"
+    },
+    {
+      "label": "support_messages",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in support_messages. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 231,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 54,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 74,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 89,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-entities-n14"
+    },
+    {
+      "label": "support_conversations",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in support_conversations. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 453,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 457,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 470,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 474,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-entities-n15"
+    },
+    {
+      "label": "account_notifications",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in account_notifications. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 17,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 29,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 31,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/account-activity.ts",
+          "line": 12,
+          "symbol": "get"
+        }
+      ],
+      "id": "database-entities-n16"
+    },
+    {
+      "label": "inventoryMovements",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Application entity stored in inventoryMovements. Relationship edges identify actual reference fields and imply no MongoDB foreign-key constraint.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1206,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1236,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-entities-n17"
+    },
+    {
+      "label": "Return entity data",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Read results return to the application.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 100,
+          "symbol": "export async function readRepository"
+        }
+      ],
+      "id": "database-entities-n18"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-entities-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-entities-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "database-entities-fail-database-entities-n0",
+      "source": "database-entities-n0",
+      "target": "database-entities-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "database-entities-fail-end",
+      "source": "database-entities-error",
+      "target": "database-entities-failure-end",
+      "failure": true
+    },
+    {
+      "id": "entity-entry-0",
+      "source": "database-entities-n0",
+      "target": "database-entities-n1",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-0",
+      "source": "database-entities-n1",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-1",
+      "source": "database-entities-n0",
+      "target": "database-entities-n2",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-1",
+      "source": "database-entities-n2",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-2",
+      "source": "database-entities-n0",
+      "target": "database-entities-n3",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-2",
+      "source": "database-entities-n3",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-3",
+      "source": "database-entities-n0",
+      "target": "database-entities-n4",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-3",
+      "source": "database-entities-n4",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-4",
+      "source": "database-entities-n0",
+      "target": "database-entities-n5",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-4",
+      "source": "database-entities-n5",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-5",
+      "source": "database-entities-n0",
+      "target": "database-entities-n6",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-5",
+      "source": "database-entities-n6",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-6",
+      "source": "database-entities-n0",
+      "target": "database-entities-n7",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-6",
+      "source": "database-entities-n7",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-7",
+      "source": "database-entities-n0",
+      "target": "database-entities-n8",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-7",
+      "source": "database-entities-n8",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-8",
+      "source": "database-entities-n0",
+      "target": "database-entities-n9",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-8",
+      "source": "database-entities-n9",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-9",
+      "source": "database-entities-n0",
+      "target": "database-entities-n10",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-9",
+      "source": "database-entities-n10",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-10",
+      "source": "database-entities-n0",
+      "target": "database-entities-n11",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-10",
+      "source": "database-entities-n11",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-11",
+      "source": "database-entities-n0",
+      "target": "database-entities-n12",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-11",
+      "source": "database-entities-n12",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-12",
+      "source": "database-entities-n0",
+      "target": "database-entities-n13",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-12",
+      "source": "database-entities-n13",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-13",
+      "source": "database-entities-n0",
+      "target": "database-entities-n14",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-13",
+      "source": "database-entities-n14",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-14",
+      "source": "database-entities-n0",
+      "target": "database-entities-n15",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-14",
+      "source": "database-entities-n15",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-15",
+      "source": "database-entities-n0",
+      "target": "database-entities-n16",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-15",
+      "source": "database-entities-n16",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-entry-16",
+      "source": "database-entities-n0",
+      "target": "database-entities-n17",
+      "label": "Repository access"
+    },
+    {
+      "id": "entity-result-16",
+      "source": "database-entities-n17",
+      "target": "database-entities-n18",
+      "label": "Read result"
+    },
+    {
+      "id": "entity-ref-0",
+      "source": "database-entities-n1",
+      "target": "database-entities-n2",
+      "label": "userId -> users.id"
+    },
+    {
+      "id": "entity-ref-1",
+      "source": "database-entities-n3",
+      "target": "database-entities-n2",
+      "label": "userId -> users.id"
+    },
+    {
+      "id": "entity-ref-2",
+      "source": "database-entities-n4",
+      "target": "database-entities-n2",
+      "label": "userId / owner -> user identity"
+    },
+    {
+      "id": "entity-ref-3",
+      "source": "database-entities-n5",
+      "target": "database-entities-n4",
+      "label": "orderId -> orders.id"
+    },
+    {
+      "id": "entity-ref-4",
+      "source": "database-entities-n6",
+      "target": "database-entities-n7",
+      "label": "id -> variants[].sku"
+    },
+    {
+      "id": "entity-ref-5",
+      "source": "database-entities-n8",
+      "target": "database-entities-n7",
+      "label": "lines[].sku -> variants[].sku"
+    },
+    {
+      "id": "entity-ref-6",
+      "source": "database-entities-n9",
+      "target": "database-entities-n2",
+      "label": "userId -> users.id"
+    },
+    {
+      "id": "entity-ref-7",
+      "source": "database-entities-n9",
+      "target": "database-entities-n4",
+      "label": "optional orderId -> orders.id"
+    },
+    {
+      "id": "entity-ref-8",
+      "source": "database-entities-n10",
+      "target": "database-entities-n4",
+      "label": "orderId -> orders.id"
+    },
+    {
+      "id": "entity-ref-9",
+      "source": "database-entities-n11",
+      "target": "database-entities-n10",
+      "label": "ticketId -> tickets.id"
+    },
+    {
+      "id": "entity-ref-10",
+      "source": "database-entities-n11",
+      "target": "database-entities-n4",
+      "label": "orderRawId -> orders.id"
+    },
+    {
+      "id": "entity-ref-11",
+      "source": "database-entities-n4",
+      "target": "database-entities-n12",
+      "label": "campaignId -> campaigns.id"
+    },
+    {
+      "id": "entity-ref-12",
+      "source": "database-entities-n13",
+      "target": "database-entities-n12",
+      "label": "campaignId -> campaign identity"
+    },
+    {
+      "id": "entity-ref-13",
+      "source": "database-entities-n14",
+      "target": "database-entities-n15",
+      "label": "ticketId -> conversation ID"
+    },
+    {
+      "id": "entity-ref-14",
+      "source": "database-entities-n16",
+      "target": "database-entities-n2",
+      "label": "userId -> users.id"
+    },
+    {
+      "id": "entity-ref-15",
+      "source": "database-entities-n17",
+      "target": "database-entities-n6",
+      "label": "sku -> inventory.id"
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "Reference edges represent application-level lookup relationships. Repository access/result edges preserve diagram entry and exit, not additional entity relationships.",
+    "orders embeds paymentInfo, refunds[], shipping and logisticsOperations; users embeds accountWishlist. No nonexistent separate entity is introduced."
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "checks": [
+    {
+      "name": "Initial render and graph",
+      "passed": true
+    },
+    {
+      "name": "All 38 workflow selections",
+      "passed": true
+    },
+    {
+      "name": "Node details and evidence",
+      "passed": true
+    },
+    {
+      "name": "Label edit, undo, redo",
+      "passed": true
+    },
+    {
+      "name": "Local persistence on reload",
+      "passed": true
+    },
+    {
+      "name": "Node search and focus",
+      "passed": true
+    },
+    {
+      "name": "Add planned node and detect disconnected graph",
+      "passed": true
+    },
+    {
+      "name": "Drag node and undo",
+      "passed": true
+    },
+    {
+      "name": "Auto layout and graph integrity",
+      "passed": true
+    },
+    {
+      "name": "Vertical automatic layout",
+      "passed": true
+    },
+    {
+      "name": "Create proposed connection",
+      "passed": true
+    },
+    {
+      "name": "Drag-and-drop node palette",
+      "passed": true
+    },
+    {
+      "name": "Fullscreen toggle",
+      "passed": true
+    },
+    {
+      "name": "SVG PNG PDF JSON downloads",
+      "passed": true
+    },
+    {
+      "name": "JSON import",
+      "passed": true
+    },
+    {
+      "name": "API inventory and operation diagrams",
+      "passed": true
+    },
+    {
+      "name": "Integration statuses",
+      "passed": true
+    },
+    {
+      "name": "Mobile rendering",
+      "passed": true
+    },
+    {
+      "name": "No browser runtime or console errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

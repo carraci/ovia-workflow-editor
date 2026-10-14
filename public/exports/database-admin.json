@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "database-admin",
+  "title": "Admin settings & audit data",
+  "subtitle": "Collection boundaries and source-backed data references",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Domain persistence request",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Application services query the collections listed in this domain.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "database-admin-n0"
+    },
+    {
+      "label": "audit",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection audit; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/support/route.ts",
+          "line": 196,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 329,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 481,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 246,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1798,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 279,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 563,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 142,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 309,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 410,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 466,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 217,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-admin-n1"
+    },
+    {
+      "label": "settings",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection settings; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1818,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1867,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1868,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 91,
+          "symbol": "get"
+        }
+      ],
+      "id": "database-admin-n2"
+    },
+    {
+      "label": "integrations",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection integrations; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 53,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 67,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 68,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 106,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 786,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 787,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-admin-n3"
+    },
+    {
+      "label": "site_content",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection site_content; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/content/route.ts",
+          "line": 230,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/app/api/admin/content/route.ts",
+          "line": 233,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/content/route.ts",
+          "line": 270,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/app/api/admin/content/route.ts",
+          "line": 277,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-admin-n4"
+    },
+    {
+      "label": "Stored domain response",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Return persisted domain data to the service.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 100,
+          "symbol": "export async function readRepository"
+        }
+      ],
+      "id": "database-admin-n5"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-admin-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-admin-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "database-admin-e0",
+      "source": "database-admin-n0",
+      "target": "database-admin-n1"
+    },
+    {
+      "id": "database-admin-e1",
+      "source": "database-admin-n1",
+      "target": "database-admin-n2"
+    },
+    {
+      "id": "database-admin-e2",
+      "source": "database-admin-n2",
+      "target": "database-admin-n3"
+    },
+    {
+      "id": "database-admin-e3",
+      "source": "database-admin-n3",
+      "target": "database-admin-n4"
+    },
+    {
+      "id": "database-admin-e4",
+      "source": "database-admin-n4",
+      "target": "database-admin-n5"
+    },
+    {
+      "id": "database-admin-fail-database-admin-n0",
+      "source": "database-admin-n0",
+      "target": "database-admin-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "database-admin-fail-end",
+      "source": "database-admin-error",
+      "target": "database-admin-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified."
+  ]
+}

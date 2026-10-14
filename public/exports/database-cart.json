@@ -1,0 +1,425 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "database-cart",
+  "title": "Cart & checkout data",
+  "subtitle": "Collection boundaries and source-backed data references",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Domain persistence request",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Application services query the collections listed in this domain.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "database-cart-n0"
+    },
+    {
+      "label": "carts",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection carts; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 7,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 9,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 20,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 21,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1491,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 53,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 64,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 79,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 95,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 141,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 150,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 193,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 242,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 254,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 214,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 216,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 304,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 245,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-cart-n1"
+    },
+    {
+      "label": "checkoutSessions",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection checkoutSessions; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 136,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 191,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 312,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 313,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 39,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 189,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 194,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 233,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 238,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 360,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 364,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 291,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 305,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 310,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 252,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-cart-n2"
+    },
+    {
+      "label": "checkoutPromos",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection checkoutPromos; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 132,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 262,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 253,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-cart-n3"
+    },
+    {
+      "label": "coupons",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection coupons; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1546,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1553,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1559,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1614,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1618,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1621,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1661,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1664,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1665,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1668,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1671,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1690,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1695,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1726,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1729,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1735,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 115,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 127,
+          "symbol": "find"
+        }
+      ],
+      "id": "database-cart-n4"
+    },
+    {
+      "label": "Stored domain response",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Return persisted domain data to the service.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 100,
+          "symbol": "export async function readRepository"
+        }
+      ],
+      "id": "database-cart-n5"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-cart-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-cart-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "database-cart-e0",
+      "source": "database-cart-n0",
+      "target": "database-cart-n1"
+    },
+    {
+      "id": "database-cart-e1",
+      "source": "database-cart-n1",
+      "target": "database-cart-n2"
+    },
+    {
+      "id": "database-cart-e2",
+      "source": "database-cart-n2",
+      "target": "database-cart-n3"
+    },
+    {
+      "id": "database-cart-e3",
+      "source": "database-cart-n3",
+      "target": "database-cart-n4"
+    },
+    {
+      "id": "database-cart-e4",
+      "source": "database-cart-n4",
+      "target": "database-cart-n5"
+    },
+    {
+      "id": "database-cart-fail-database-cart-n0",
+      "source": "database-cart-n0",
+      "target": "database-cart-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "database-cart-fail-end",
+      "source": "database-cart-error",
+      "target": "database-cart-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "checkoutSessions.orderId -> orders.id (src/server/commerce.ts:191)",
+    "carts.lines[].sku -> variants[].sku (src/server/commerce.ts:25)"
+  ]
+}
