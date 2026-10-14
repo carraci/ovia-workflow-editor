@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "15-notifications",
+  "title": "Notifications & email automation",
+  "subtitle": "Idempotent outbox, protected cron delivery and recorded notifications",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Order / account event",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Account verification, recovery, confirmed orders and shipping events trigger relevant mail routines.",
+      "evidence": [
+        {
+          "file": "src/server/mail.ts",
+          "line": 271,
+          "symbol": "export async function queueOrderConfirmation"
+        }
+      ],
+      "id": "15-notifications-n0"
+    },
+    {
+      "label": "Queue outbox message",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Outbox IDs and existing-record checks prevent duplicate messages.",
+      "evidence": [
+        {
+          "file": "src/server/mail.ts",
+          "line": 42,
+          "symbol": "await repo.put<Mail>(\"outbox\""
+        }
+      ],
+      "id": "15-notifications-n1"
+    },
+    {
+      "label": "Protected mail cron",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Bearer CRON_SECRET is required; no secret value is exported.",
+      "evidence": [
+        {
+          "file": "src/app/api/cron/mail/route.ts",
+          "line": 4,
+          "symbol": "export function GET"
+        }
+      ],
+      "endpoint": "GET /api/cron/mail",
+      "id": "15-notifications-n2"
+    },
+    {
+      "label": "Cron authorization",
+      "category": "Backend",
+      "kind": "Authentication",
+      "status": "Implemented",
+      "description": "Missing or incorrect bearer token is rejected.",
+      "evidence": [
+        {
+          "file": "src/app/api/cron/mail/route.ts",
+          "line": 10,
+          "symbol": "throw new ApiError(401"
+        }
+      ],
+      "id": "15-notifications-n3"
+    },
+    {
+      "label": "Deliver pending outbox",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Read pending messages, send and mark sent only after successful delivery.",
+      "evidence": [
+        {
+          "file": "src/server/mail.ts",
+          "line": 251,
+          "symbol": "export async function deliverMail"
+        }
+      ],
+      "id": "15-notifications-n4"
+    },
+    {
+      "label": "Resend Emails HTTP API",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Account and order mail HTTP integration; retries and failure status remain explicit. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/mail.ts",
+          "line": 193,
+          "symbol": "https://api.resend.com/emails"
+        }
+      ],
+      "id": "15-notifications-n5"
+    },
+    {
+      "label": "Mark sent / record logs",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Notification studio has notification_logs and deduplication; account events write account_notifications.",
+      "evidence": [
+        {
+          "file": "src/server/notification-service.ts",
+          "line": 766,
+          "symbol": "async function recordNotificationLog"
+        }
+      ],
+      "id": "15-notifications-n6"
+    },
+    {
+      "label": "Notification and activity UI",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Account activity reads notifications; admin notification studio reads delivery logs.",
+      "evidence": [
+        {
+          "file": "src/components/account-activity-feed.tsx",
+          "line": 1
+        }
+      ],
+      "id": "15-notifications-n7"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "15-notifications-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "15-notifications-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "15-notifications-e0",
+      "source": "15-notifications-n0",
+      "target": "15-notifications-n1"
+    },
+    {
+      "id": "15-notifications-e1",
+      "source": "15-notifications-n1",
+      "target": "15-notifications-n2"
+    },
+    {
+      "id": "15-notifications-e2",
+      "source": "15-notifications-n2",
+      "target": "15-notifications-n3"
+    },
+    {
+      "id": "15-notifications-e3",
+      "source": "15-notifications-n3",
+      "target": "15-notifications-n4"
+    },
+    {
+      "id": "15-notifications-e4",
+      "source": "15-notifications-n4",
+      "target": "15-notifications-n5"
+    },
+    {
+      "id": "15-notifications-e5",
+      "source": "15-notifications-n5",
+      "target": "15-notifications-n6"
+    },
+    {
+      "id": "15-notifications-e6",
+      "source": "15-notifications-n6",
+      "target": "15-notifications-n7"
+    },
+    {
+      "id": "15-notifications-fail-15-notifications-n3",
+      "source": "15-notifications-n3",
+      "target": "15-notifications-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "15-notifications-fail-end",
+      "source": "15-notifications-error",
+      "target": "15-notifications-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "Outbox delivery and notification studio dispatch are related but separate service paths; not every outbox send creates a notification_logs entry."
+  ]
+}

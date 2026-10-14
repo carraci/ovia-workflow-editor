@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "16-marketing",
+  "title": "Marketing & coupons",
+  "subtitle": "Persisted campaigns, click attribution, coupon pricing and paid usage",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Owner manages campaign / coupon",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Marketing and coupon admin interfaces.",
+      "evidence": [
+        {
+          "file": "src/app/admin/(control-center)/marketing/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "16-marketing-n0"
+    },
+    {
+      "label": "Marketing / coupon API",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Owner-authorized CRUD; campaign routes collect storefront activity.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/coupons/route.ts",
+          "line": 18,
+          "symbol": "export async function POST"
+        }
+      ],
+      "endpoint": "POST /api/admin/coupons",
+      "id": "16-marketing-n1"
+    },
+    {
+      "label": "Persist coupon rules",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Validate discount, eligibility, usage and expiration settings.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1564,
+          "symbol": "export async function createAdminCoupon"
+        }
+      ],
+      "id": "16-marketing-n2"
+    },
+    {
+      "label": "coupons and campaigns",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Campaign events and order campaignId support attribution; coupons store pricing rules.",
+      "evidence": [
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 22,
+          "symbol": "\"campaignEvents\""
+        }
+      ],
+      "id": "16-marketing-n3"
+    },
+    {
+      "label": "Coupon eligible at checkout?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Server reads current coupon and prior customer orders to apply allowed pricing.",
+      "evidence": [
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 115,
+          "symbol": "\"coupons\""
+        }
+      ],
+      "id": "16-marketing-n4"
+    },
+    {
+      "label": "Record paid coupon usage",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Confirmed order usage is recorded; pending checkout must not consume paid usage.",
+      "evidence": [
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 312,
+          "symbol": "recordPaidCouponUsage"
+        }
+      ],
+      "id": "16-marketing-n5"
+    },
+    {
+      "label": "Campaign and pricing results",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Marketing UI and checkout display persisted campaign and discount outcomes.",
+      "evidence": [
+        {
+          "file": "src/app/admin/(control-center)/marketing/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "16-marketing-n6"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "16-marketing-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "16-marketing-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "16-marketing-e0",
+      "source": "16-marketing-n0",
+      "target": "16-marketing-n1"
+    },
+    {
+      "id": "16-marketing-e1",
+      "source": "16-marketing-n1",
+      "target": "16-marketing-n2"
+    },
+    {
+      "id": "16-marketing-e2",
+      "source": "16-marketing-n2",
+      "target": "16-marketing-n3"
+    },
+    {
+      "id": "16-marketing-e3",
+      "source": "16-marketing-n3",
+      "target": "16-marketing-n4"
+    },
+    {
+      "id": "16-marketing-e4",
+      "source": "16-marketing-n4",
+      "target": "16-marketing-n5",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "16-marketing-e5",
+      "source": "16-marketing-n5",
+      "target": "16-marketing-n6"
+    },
+    {
+      "id": "16-marketing-fail-16-marketing-n4",
+      "source": "16-marketing-n4",
+      "target": "16-marketing-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "16-marketing-fail-end",
+      "source": "16-marketing-error",
+      "target": "16-marketing-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified."
+  ]
+}

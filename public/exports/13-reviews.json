@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "13-reviews",
+  "title": "Reviews & ratings",
+  "subtitle": "Authenticated submissions, ownership and order-linked verified purchase evidence",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Write product review",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Review UI displays published ratings and submits customer content.",
+      "evidence": [
+        {
+          "file": "src/components/product-reviews.tsx",
+          "line": 1
+        }
+      ],
+      "id": "13-reviews-n0"
+    },
+    {
+      "label": "Review CRUD",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Schemas validate rating, comment, aspect scores and attachment metadata.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 161,
+          "symbol": "export async function POST"
+        }
+      ],
+      "endpoint": "GET / POST / PUT / DELETE /api/v1/reviews",
+      "id": "13-reviews-n1"
+    },
+    {
+      "label": "Authenticate reviewer",
+      "category": "Backend",
+      "kind": "Authentication",
+      "status": "Implemented",
+      "description": "Mutation requires currentUser; edit and delete enforce author ownership.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 4,
+          "symbol": "currentUser"
+        }
+      ],
+      "id": "13-reviews-n2"
+    },
+    {
+      "label": "Check purchase association",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Stored orders are searched to associate product SKU with a real purchase; verified flag reflects evidence.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 178,
+          "symbol": "const userOrders"
+        }
+      ],
+      "id": "13-reviews-n3"
+    },
+    {
+      "label": "Persist reviews",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "reviews holds userId, optional orderId, productSku, productSlug, rating, status and verified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 215,
+          "symbol": "await repo.put(\"reviews\", reviewRecord)"
+        }
+      ],
+      "id": "13-reviews-n4"
+    },
+    {
+      "label": "Visible reviews and ratings",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Public review read path filters approved reviews.",
+      "evidence": [
+        {
+          "file": "src/components/product-reviews.tsx",
+          "line": 1
+        }
+      ],
+      "id": "13-reviews-n5"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 161,
+          "symbol": "export async function POST"
+        }
+      ],
+      "id": "13-reviews-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 161,
+          "symbol": "export async function POST"
+        }
+      ],
+      "id": "13-reviews-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "13-reviews-e0",
+      "source": "13-reviews-n0",
+      "target": "13-reviews-n1"
+    },
+    {
+      "id": "13-reviews-e1",
+      "source": "13-reviews-n1",
+      "target": "13-reviews-n2"
+    },
+    {
+      "id": "13-reviews-e2",
+      "source": "13-reviews-n2",
+      "target": "13-reviews-n3"
+    },
+    {
+      "id": "13-reviews-e3",
+      "source": "13-reviews-n3",
+      "target": "13-reviews-n4"
+    },
+    {
+      "id": "13-reviews-e4",
+      "source": "13-reviews-n4",
+      "target": "13-reviews-n5"
+    },
+    {
+      "id": "13-reviews-fail-13-reviews-n2",
+      "source": "13-reviews-n2",
+      "target": "13-reviews-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "13-reviews-fail-end",
+      "source": "13-reviews-error",
+      "target": "13-reviews-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified."
+  ]
+}

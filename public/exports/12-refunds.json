@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "12-refunds",
+  "title": "Refund processing",
+  "subtitle": "Captured payment verification, refund balance and provider-confirmed result",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Owner requests refund",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Payments UI verifies provider payment before refunding.",
+      "evidence": [
+        {
+          "file": "src/app/admin/(control-center)/payments/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "12-refunds-n0"
+    },
+    {
+      "label": "POST admin payments",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Owner authorization, origin, rate limit and refund input checks.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/payments/route.ts",
+          "line": 50,
+          "symbol": "export async function POST"
+        }
+      ],
+      "endpoint": "POST /api/admin/payments",
+      "id": "12-refunds-n1"
+    },
+    {
+      "label": "Refundable captured payment?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Verify provider capture, currency, amount, remaining refundable balance and idempotent refund identity.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 100,
+          "symbol": "Only a verified, captured Razorpay"
+        }
+      ],
+      "id": "12-refunds-n2"
+    },
+    {
+      "label": "Record Processing refund",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Embedded orders.refunds[] and audit entry record the intent before provider execution.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 408,
+          "symbol": "refunds: [...(current.refunds || []), created]"
+        }
+      ],
+      "id": "12-refunds-n3"
+    },
+    {
+      "label": "Razorpay Refunds API",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Gateway may report processed, failed or still processing; ambiguous responses remain unresolved. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 430,
+          "symbol": "`payments/${record.paymentId}/refund`"
+        }
+      ],
+      "id": "12-refunds-n4"
+    },
+    {
+      "label": "Signed refund webhook",
+      "category": "API",
+      "kind": "Webhook",
+      "status": "Implemented",
+      "description": "Verified Razorpay refund event reaches processRefundWebhook.",
+      "evidence": [
+        {
+          "file": "src/app/api/webhooks/[provider]/route.ts",
+          "line": 13,
+          "symbol": "export async function POST"
+        }
+      ],
+      "id": "12-refunds-n5"
+    },
+    {
+      "label": "Reconcile remote refund",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Refund identity, order association, amount and event status are validated.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 561,
+          "symbol": "export async function processRefundWebhook"
+        }
+      ],
+      "id": "12-refunds-n6"
+    },
+    {
+      "label": "Refunded / Failed / Processing",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Persist only provider-confirmed status; audit and cancellation reconciliation follow.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 284,
+          "symbol": "refunds: order.refunds!.map"
+        }
+      ],
+      "id": "12-refunds-n7"
+    },
+    {
+      "label": "Provider refund status",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Owner and account views use recorded provider refund status.",
+      "evidence": [
+        {
+          "file": "src/app/admin/(control-center)/payments/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "12-refunds-n8"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "12-refunds-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "12-refunds-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "12-refunds-e0",
+      "source": "12-refunds-n0",
+      "target": "12-refunds-n1"
+    },
+    {
+      "id": "12-refunds-e1",
+      "source": "12-refunds-n1",
+      "target": "12-refunds-n2"
+    },
+    {
+      "id": "12-refunds-e2",
+      "source": "12-refunds-n2",
+      "target": "12-refunds-n3",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "12-refunds-e3",
+      "source": "12-refunds-n3",
+      "target": "12-refunds-n4"
+    },
+    {
+      "id": "12-refunds-e4",
+      "source": "12-refunds-n4",
+      "target": "12-refunds-n5"
+    },
+    {
+      "id": "12-refunds-e5",
+      "source": "12-refunds-n5",
+      "target": "12-refunds-n6"
+    },
+    {
+      "id": "12-refunds-e6",
+      "source": "12-refunds-n6",
+      "target": "12-refunds-n7"
+    },
+    {
+      "id": "12-refunds-e7",
+      "source": "12-refunds-n7",
+      "target": "12-refunds-n8"
+    },
+    {
+      "id": "12-refunds-fail-12-refunds-n2",
+      "source": "12-refunds-n2",
+      "target": "12-refunds-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "12-refunds-fail-end",
+      "source": "12-refunds-error",
+      "target": "12-refunds-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "Manual returns approval is separate from gateway refund execution. Automated PayPal and Stripe refund execution was not found; a future implementation is Planned."
+  ]
+}

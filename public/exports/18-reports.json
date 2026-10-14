@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "18-reports",
+  "title": "Reports & analytics",
+  "subtitle": "Stored sales reports, date ranges, campaign events and activity heartbeat",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Select report range",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Owner reports page selects report type and range.",
+      "evidence": [
+        {
+          "file": "src/app/admin/(control-center)/reports/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "18-reports-n0"
+    },
+    {
+      "label": "GET admin reports",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "authorizeAdminApi precedes getAdminReports.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/reports/route.ts",
+          "line": 5,
+          "symbol": "export async function GET"
+        }
+      ],
+      "endpoint": "GET /api/admin/reports?type=…&range=…",
+      "id": "18-reports-n1"
+    },
+    {
+      "label": "Authorize report viewer",
+      "category": "Admin",
+      "kind": "Authentication",
+      "status": "Implemented",
+      "description": "Only authorized owner sessions can read admin reports.",
+      "evidence": [
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 107,
+          "symbol": "export async function authorizeAdminApi"
+        }
+      ],
+      "id": "18-reports-n2"
+    },
+    {
+      "label": "Stored orders and catalog",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Orders plus full catalog feed buildStoredSalesReport; no synthetic revenue is claimed.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1812,
+          "symbol": "export async function getAdminReports"
+        }
+      ],
+      "id": "18-reports-n3"
+    },
+    {
+      "label": "Aggregate stored report",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Report calculations are imported from admin date-range helpers.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 2,
+          "symbol": "buildStoredSalesReport"
+        }
+      ],
+      "id": "18-reports-n4"
+    },
+    {
+      "label": "Report / export results",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Reports UI presents calculated data; admin dashboard and campaign analytics are separate routes.",
+      "evidence": [
+        {
+          "file": "src/app/admin/(control-center)/reports/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "18-reports-n5"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "18-reports-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "18-reports-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "18-reports-e0",
+      "source": "18-reports-n0",
+      "target": "18-reports-n1"
+    },
+    {
+      "id": "18-reports-e1",
+      "source": "18-reports-n1",
+      "target": "18-reports-n2"
+    },
+    {
+      "id": "18-reports-e2",
+      "source": "18-reports-n2",
+      "target": "18-reports-n3"
+    },
+    {
+      "id": "18-reports-e3",
+      "source": "18-reports-n3",
+      "target": "18-reports-n4"
+    },
+    {
+      "id": "18-reports-e4",
+      "source": "18-reports-n4",
+      "target": "18-reports-n5"
+    },
+    {
+      "id": "18-reports-fail-18-reports-n2",
+      "source": "18-reports-n2",
+      "target": "18-reports-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "18-reports-fail-end",
+      "source": "18-reports-error",
+      "target": "18-reports-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "AI copilot is an implemented optional DeepSeek request path. Model quality and production connectivity are Unverified; it does not replace stored sales calculations."
+  ]
+}

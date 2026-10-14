@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "14-support",
+  "title": "Customer support",
+  "subtitle": "Care tickets, conversations, attachments, mailbox and authenticated replies",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Open support conversation",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Customer care interface sends tickets, reads conversations and uploads attachments.",
+      "evidence": [
+        {
+          "file": "src/components/account-support.tsx",
+          "line": 1
+        }
+      ],
+      "id": "14-support-n0"
+    },
+    {
+      "label": "Care / support API",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Authenticated care path creates structured tickets. /api/v1/support is a separate legacy ticket path.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 187,
+          "symbol": "export async function POST"
+        }
+      ],
+      "endpoint": "POST /api/v1/care/tickets",
+      "id": "14-support-n1"
+    },
+    {
+      "label": "Authenticate and validate",
+      "category": "Backend",
+      "kind": "Authentication",
+      "status": "Implemented",
+      "description": "Care viewer must be signed in; schema and rate limit apply to mutations.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 30,
+          "symbol": "async function viewer"
+        }
+      ],
+      "id": "14-support-n2"
+    },
+    {
+      "label": "Create care ticket",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Record request and initial support conversation; order-linked requests validate ownership.",
+      "evidence": [
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 131,
+          "symbol": "export async function createCareTicket"
+        }
+      ],
+      "id": "14-support-n3"
+    },
+    {
+      "label": "Tickets and messages",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "tickets, support_conversations, support_messages and attachment metadata store conversation state.",
+      "evidence": [
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 70,
+          "symbol": "export async function appendConversationMessage"
+        }
+      ],
+      "id": "14-support-n4"
+    },
+    {
+      "label": "Support inbox and replies",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Owner/support inbox manages replies, status and mail thread linkage.",
+      "evidence": [
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 130,
+          "symbol": "saveReply"
+        }
+      ],
+      "id": "14-support-n5"
+    },
+    {
+      "label": "Resend / Gmail mailbox",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Gmail OAuth mailbox sync and Resend outbound delivery are implemented code paths. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-gmail.ts",
+          "line": 1
+        }
+      ],
+      "id": "14-support-n6"
+    },
+    {
+      "label": "Updated conversation",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Customer sees support replies; realtime notifications have a separate transport service.",
+      "evidence": [
+        {
+          "file": "src/components/account-support.tsx",
+          "line": 1
+        }
+      ],
+      "id": "14-support-n7"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "14-support-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "14-support-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "14-support-e0",
+      "source": "14-support-n0",
+      "target": "14-support-n1"
+    },
+    {
+      "id": "14-support-e1",
+      "source": "14-support-n1",
+      "target": "14-support-n2"
+    },
+    {
+      "id": "14-support-e2",
+      "source": "14-support-n2",
+      "target": "14-support-n3"
+    },
+    {
+      "id": "14-support-e3",
+      "source": "14-support-n3",
+      "target": "14-support-n4"
+    },
+    {
+      "id": "14-support-e4",
+      "source": "14-support-n4",
+      "target": "14-support-n5"
+    },
+    {
+      "id": "14-support-e5",
+      "source": "14-support-n5",
+      "target": "14-support-n6"
+    },
+    {
+      "id": "14-support-e6",
+      "source": "14-support-n6",
+      "target": "14-support-n7"
+    },
+    {
+      "id": "14-support-fail-14-support-n2",
+      "source": "14-support-n2",
+      "target": "14-support-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "14-support-fail-end",
+      "source": "14-support-error",
+      "target": "14-support-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "Care tickets and legacy support_tickets are distinct collections. Conversation IDs encode the source collection; do not conflate them."
+  ]
+}

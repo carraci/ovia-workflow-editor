@@ -1,0 +1,289 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "20-master-commerce",
+  "title": "Complete master e-commerce workflow",
+  "subtitle": "Customer journey from discovery to payment, delivery and aftercare",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Discover OVIA",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Home, navigation and bag / luggage storefront.",
+      "evidence": [
+        {
+          "file": "src/app/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "20-master-commerce-n0"
+    },
+    {
+      "label": "Browse and choose variant",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Product listing, detail, search and filter flows.",
+      "evidence": [
+        {
+          "file": "src/components/product-detail.tsx",
+          "line": 1
+        }
+      ],
+      "id": "20-master-commerce-n1"
+    },
+    {
+      "label": "Wishlist and shopping bag",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Frontend provider sends cart and wishlist mutations.",
+      "evidence": [
+        {
+          "file": "src/components/store-provider.tsx",
+          "line": 1
+        }
+      ],
+      "id": "20-master-commerce-n2"
+    },
+    {
+      "label": "Review checkout",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Address, PIN serviceability, shipping method and quote.",
+      "evidence": [
+        {
+          "file": "src/app/checkout/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "20-master-commerce-n3"
+    },
+    {
+      "label": "Order valid and stock available?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Idempotent order and stock reservation transaction.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 115,
+          "symbol": "export async function createOrder"
+        }
+      ],
+      "id": "20-master-commerce-n4"
+    },
+    {
+      "label": "Verify provider payment",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Razorpay secure checkout; PayPal sandbox is an alternate flow. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 385,
+          "symbol": "export async function verifyRazorpayPayment"
+        }
+      ],
+      "id": "20-master-commerce-n5"
+    },
+    {
+      "label": "Finalize paid order",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Confirmed paid state, replay event and mail queue.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 211,
+          "symbol": "export async function finalizePayment"
+        }
+      ],
+      "id": "20-master-commerce-n6"
+    },
+    {
+      "label": "Owner fulfillment approval",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Verified payment precedes courier shipment and pickup.",
+      "evidence": [
+        {
+          "file": "src/server/logistics.ts",
+          "line": 69,
+          "symbol": "export function makeLogisticsService"
+        }
+      ],
+      "id": "20-master-commerce-n7"
+    },
+    {
+      "label": "Delhivery delivery tracking",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Courier API / authenticated webhook updates stored shipping. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 73,
+          "symbol": "export async function syncOrderTracking"
+        }
+      ],
+      "id": "20-master-commerce-n8"
+    },
+    {
+      "label": "Delivered order and aftercare",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Customer tracks delivery, submits reviews or opens cancellation / return / refund requests.",
+      "evidence": [
+        {
+          "file": "src/components/account-order-details.tsx",
+          "line": 1
+        }
+      ],
+      "id": "20-master-commerce-n9"
+    },
+    {
+      "label": "Aftercare review and refund",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Tickets are reviewed; gateway refunds follow the separate authorized refund flow.",
+      "evidence": [
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 131,
+          "symbol": "export async function createCareTicket"
+        }
+      ],
+      "id": "20-master-commerce-n10"
+    },
+    {
+      "label": "Customer outcome recorded",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Display delivery, review request, cancellation and provider refund evidence.",
+      "evidence": [
+        {
+          "file": "src/components/account-orders-returns.tsx",
+          "line": 1
+        }
+      ],
+      "id": "20-master-commerce-n11"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "20-master-commerce-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "20-master-commerce-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "20-master-commerce-e0",
+      "source": "20-master-commerce-n0",
+      "target": "20-master-commerce-n1"
+    },
+    {
+      "id": "20-master-commerce-e1",
+      "source": "20-master-commerce-n1",
+      "target": "20-master-commerce-n2"
+    },
+    {
+      "id": "20-master-commerce-e2",
+      "source": "20-master-commerce-n2",
+      "target": "20-master-commerce-n3"
+    },
+    {
+      "id": "20-master-commerce-e3",
+      "source": "20-master-commerce-n3",
+      "target": "20-master-commerce-n4"
+    },
+    {
+      "id": "20-master-commerce-e4",
+      "source": "20-master-commerce-n4",
+      "target": "20-master-commerce-n5",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "20-master-commerce-e5",
+      "source": "20-master-commerce-n5",
+      "target": "20-master-commerce-n6"
+    },
+    {
+      "id": "20-master-commerce-e6",
+      "source": "20-master-commerce-n6",
+      "target": "20-master-commerce-n7"
+    },
+    {
+      "id": "20-master-commerce-e7",
+      "source": "20-master-commerce-n7",
+      "target": "20-master-commerce-n8"
+    },
+    {
+      "id": "20-master-commerce-e8",
+      "source": "20-master-commerce-n8",
+      "target": "20-master-commerce-n9"
+    },
+    {
+      "id": "20-master-commerce-e9",
+      "source": "20-master-commerce-n9",
+      "target": "20-master-commerce-n10"
+    },
+    {
+      "id": "20-master-commerce-e10",
+      "source": "20-master-commerce-n10",
+      "target": "20-master-commerce-n11"
+    },
+    {
+      "id": "20-master-commerce-fail-20-master-commerce-n4",
+      "source": "20-master-commerce-n4",
+      "target": "20-master-commerce-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "20-master-commerce-fail-end",
+      "source": "20-master-commerce-error",
+      "target": "20-master-commerce-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "This master is a process composition of the individual evidence-mapped workflows, not one executable handler."
+  ]
+}

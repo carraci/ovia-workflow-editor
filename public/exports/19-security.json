@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "19-security",
+  "title": "Security & access control",
+  "subtitle": "Signed sessions, roles, origin checks, limits and explicit access errors",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Incoming protected request",
+      "category": "API",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Applicable mutation handlers apply guards locally.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 15,
+          "symbol": "export function originCheck"
+        }
+      ],
+      "id": "19-security-n0"
+    },
+    {
+      "label": "JWT and stored session",
+      "category": "Backend",
+      "kind": "Authentication",
+      "status": "Implemented",
+      "description": "Check HS256, issuer, audience, jti hash, session expiry and verified user record.",
+      "evidence": [
+        {
+          "file": "src/server/auth.ts",
+          "line": 112,
+          "symbol": "export async function currentUser"
+        }
+      ],
+      "id": "19-security-n1"
+    },
+    {
+      "label": "Required role / ownership?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Owner admin APIs use normalized OWNER/ADMIN; legacy staff routes have different literal role checks.",
+      "evidence": [
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 107,
+          "symbol": "export async function authorizeAdminApi"
+        }
+      ],
+      "id": "19-security-n2"
+    },
+    {
+      "label": "Origin and body limits",
+      "category": "Backend",
+      "kind": "Validation",
+      "status": "Implemented",
+      "description": "Origin allowlist and streamed body cap are helpers explicitly called by participating routes.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 36,
+          "symbol": "export async function body"
+        }
+      ],
+      "id": "19-security-n3"
+    },
+    {
+      "label": "Rate limit counters",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "limits collection tracks scoped counts in a sixty-second window; exceeding threshold returns 429.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 107,
+          "symbol": "export async function limit"
+        }
+      ],
+      "id": "19-security-n4"
+    },
+    {
+      "label": "Execute guarded handler",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Handlers parse Zod input and authorize the applicable resource before service mutations.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 219,
+          "symbol": "export async function POST"
+        }
+      ],
+      "id": "19-security-n5"
+    },
+    {
+      "label": "Safe success / error response",
+      "category": "API",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "api() maps Zod to 400, duplicate records to 409, ApiError to its code, unknown service errors to 503; redacts environment secrets.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "19-security-n6"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "19-security-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "19-security-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "19-security-e0",
+      "source": "19-security-n0",
+      "target": "19-security-n1"
+    },
+    {
+      "id": "19-security-e1",
+      "source": "19-security-n1",
+      "target": "19-security-n2"
+    },
+    {
+      "id": "19-security-e2",
+      "source": "19-security-n2",
+      "target": "19-security-n3",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "19-security-e3",
+      "source": "19-security-n3",
+      "target": "19-security-n4"
+    },
+    {
+      "id": "19-security-e4",
+      "source": "19-security-n4",
+      "target": "19-security-n5"
+    },
+    {
+      "id": "19-security-e5",
+      "source": "19-security-n5",
+      "target": "19-security-n6"
+    },
+    {
+      "id": "19-security-fail-19-security-n1",
+      "source": "19-security-n1",
+      "target": "19-security-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "19-security-fail-19-security-n2",
+      "source": "19-security-n2",
+      "target": "19-security-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "19-security-fail-19-security-n3",
+      "source": "19-security-n3",
+      "target": "19-security-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "19-security-fail-end",
+      "source": "19-security-error",
+      "target": "19-security-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "These protections are not universal middleware. API inventory lists checks found per handler; several routes use custom response/error wrappers. Broad origin allowances and inconsistent legacy role checks are documented review items, not silently corrected."
+  ]
+}

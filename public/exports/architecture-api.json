@@ -1,0 +1,557 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "architecture-api",
+  "title": "API architecture",
+  "subtitle": "All discovered route groups with operation-level source mapping",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Client / webhook request",
+      "category": "API",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Customer, owner, cron and provider entry points.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 42,
+          "symbol": "export async function GET"
+        }
+      ],
+      "id": "architecture-api-n0"
+    },
+    {
+      "label": "App Router dispatch",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Inventory records every exported method from all 86 route files; catchalls have an additional explicit branch inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 45,
+          "symbol": "const path ="
+        }
+      ],
+      "endpoint": "/api/*",
+      "id": "architecture-api-n1"
+    },
+    {
+      "label": "Handler-specific guards",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Auth, origin, rate limits, validation and response conventions vary by endpoint.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-api-n2"
+    },
+    {
+      "label": "Database / service boundary",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Imported service symbols and source file evidence are retained per operation.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "architecture-api-n3"
+    },
+    {
+      "label": "Actual route response",
+      "category": "API",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Use the inventory and per-operation graph to inspect the full source-derived lifecycle.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-api-n4"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-api-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-api-failure-end"
+    },
+    {
+      "label": "Authentication APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "5 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/auth/login/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-0"
+    },
+    {
+      "label": "Account APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "14 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-1"
+    },
+    {
+      "label": "Products APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "2 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/products/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-2"
+    },
+    {
+      "label": "Categories APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "1 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/categories/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-3"
+    },
+    {
+      "label": "Search APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "1 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/search/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-4"
+    },
+    {
+      "label": "Cart & checkout APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "2 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/checkout/[[...action]]/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-5"
+    },
+    {
+      "label": "Orders APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "4 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/bulk-orders/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-6"
+    },
+    {
+      "label": "Payments APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "2 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/payments/razorpay/[[...action]]/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-7"
+    },
+    {
+      "label": "Shipping APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "3 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/orders/[orderId]/tracking/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-8"
+    },
+    {
+      "label": "Returns & refunds APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "1 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/orders/[id]/return/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-9"
+    },
+    {
+      "label": "Reviews APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "4 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-10"
+    },
+    {
+      "label": "Support APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "11 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/internal/support/sync/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-11"
+    },
+    {
+      "label": "Admin APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "70 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/abandoned-carts/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-12"
+    },
+    {
+      "label": "Notifications APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "3 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/notifications/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-13"
+    },
+    {
+      "label": "Marketing APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "13 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/coupons/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-14"
+    },
+    {
+      "label": "Reports APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "2 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/dashboard/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-15"
+    },
+    {
+      "label": "Other APIs",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "14 exported file-route operations. See inventory for individual handlers, service symbols and detected guards.",
+      "evidence": [
+        {
+          "file": "src/app/api/cron/expire/route.ts",
+          "line": 1
+        }
+      ],
+      "id": "api-group-16"
+    }
+  ],
+  "edges": [
+    {
+      "id": "architecture-api-e0",
+      "source": "architecture-api-n0",
+      "target": "architecture-api-n1"
+    },
+    {
+      "id": "architecture-api-e1",
+      "source": "architecture-api-n1",
+      "target": "architecture-api-n2"
+    },
+    {
+      "id": "architecture-api-e3",
+      "source": "architecture-api-n3",
+      "target": "architecture-api-n4"
+    },
+    {
+      "id": "architecture-api-fail-architecture-api-n0",
+      "source": "architecture-api-n0",
+      "target": "architecture-api-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "architecture-api-fail-end",
+      "source": "architecture-api-error",
+      "target": "architecture-api-failure-end",
+      "failure": true
+    },
+    {
+      "id": "api-group-in-0",
+      "source": "architecture-api-n2",
+      "target": "api-group-0"
+    },
+    {
+      "id": "api-group-out-0",
+      "source": "api-group-0",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-1",
+      "source": "architecture-api-n2",
+      "target": "api-group-1"
+    },
+    {
+      "id": "api-group-out-1",
+      "source": "api-group-1",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-2",
+      "source": "architecture-api-n2",
+      "target": "api-group-2"
+    },
+    {
+      "id": "api-group-out-2",
+      "source": "api-group-2",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-3",
+      "source": "architecture-api-n2",
+      "target": "api-group-3"
+    },
+    {
+      "id": "api-group-out-3",
+      "source": "api-group-3",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-4",
+      "source": "architecture-api-n2",
+      "target": "api-group-4"
+    },
+    {
+      "id": "api-group-out-4",
+      "source": "api-group-4",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-5",
+      "source": "architecture-api-n2",
+      "target": "api-group-5"
+    },
+    {
+      "id": "api-group-out-5",
+      "source": "api-group-5",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-6",
+      "source": "architecture-api-n2",
+      "target": "api-group-6"
+    },
+    {
+      "id": "api-group-out-6",
+      "source": "api-group-6",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-7",
+      "source": "architecture-api-n2",
+      "target": "api-group-7"
+    },
+    {
+      "id": "api-group-out-7",
+      "source": "api-group-7",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-8",
+      "source": "architecture-api-n2",
+      "target": "api-group-8"
+    },
+    {
+      "id": "api-group-out-8",
+      "source": "api-group-8",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-9",
+      "source": "architecture-api-n2",
+      "target": "api-group-9"
+    },
+    {
+      "id": "api-group-out-9",
+      "source": "api-group-9",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-10",
+      "source": "architecture-api-n2",
+      "target": "api-group-10"
+    },
+    {
+      "id": "api-group-out-10",
+      "source": "api-group-10",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-11",
+      "source": "architecture-api-n2",
+      "target": "api-group-11"
+    },
+    {
+      "id": "api-group-out-11",
+      "source": "api-group-11",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-12",
+      "source": "architecture-api-n2",
+      "target": "api-group-12"
+    },
+    {
+      "id": "api-group-out-12",
+      "source": "api-group-12",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-13",
+      "source": "architecture-api-n2",
+      "target": "api-group-13"
+    },
+    {
+      "id": "api-group-out-13",
+      "source": "api-group-13",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-14",
+      "source": "architecture-api-n2",
+      "target": "api-group-14"
+    },
+    {
+      "id": "api-group-out-14",
+      "source": "api-group-14",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-15",
+      "source": "architecture-api-n2",
+      "target": "api-group-15"
+    },
+    {
+      "id": "api-group-out-15",
+      "source": "api-group-15",
+      "target": "architecture-api-n3"
+    },
+    {
+      "id": "api-group-in-16",
+      "source": "architecture-api-n2",
+      "target": "api-group-16"
+    },
+    {
+      "id": "api-group-out-16",
+      "source": "api-group-16",
+      "target": "architecture-api-n3"
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified."
+  ]
+}

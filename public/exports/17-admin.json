@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "17-admin",
+  "title": "Admin dashboard & operations",
+  "subtitle": "Owner session gate, catalog, fulfillment, support, settings and audit",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Open admin control center",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Admin shell groups operations and navigation.",
+      "evidence": [
+        {
+          "file": "src/components/admin/admin-shell.tsx",
+          "line": 1
+        }
+      ],
+      "id": "17-admin-n0"
+    },
+    {
+      "label": "Require owner role",
+      "category": "Admin",
+      "kind": "Authentication",
+      "status": "Implemented",
+      "description": "Server components redirect missing sessions, unauthorized roles or database unavailability.",
+      "evidence": [
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 81,
+          "symbol": "export async function requireOwner"
+        }
+      ],
+      "id": "17-admin-n1"
+    },
+    {
+      "label": "Admin route handlers",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Each API independently authorizes the owner session; no central middleware is invented.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/dashboard/route.ts",
+          "line": 7,
+          "symbol": "export async function GET"
+        }
+      ],
+      "endpoint": "GET /api/admin/dashboard",
+      "id": "17-admin-n2"
+    },
+    {
+      "label": "Run selected operation",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Actual services cover products, inventory, orders, customers, payments, returns, support and settings.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 52,
+          "symbol": "export async function getDashboardOverview"
+        }
+      ],
+      "id": "17-admin-n3"
+    },
+    {
+      "label": "Stored business collections",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Repository queries and transactional mutations use native MongoDB driver.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "17-admin-n4"
+    },
+    {
+      "label": "Audit critical changes",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Critical owner operations record actor, action, resource, resourceId and details.",
+      "evidence": [
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 224,
+          "symbol": "export async function recordAuditEvent"
+        }
+      ],
+      "id": "17-admin-n5"
+    },
+    {
+      "label": "Refresh admin view",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Admin client refresh hooks request current data.",
+      "evidence": [
+        {
+          "file": "src/components/admin/use-live-admin-refresh.ts",
+          "line": 1
+        }
+      ],
+      "id": "17-admin-n6"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "17-admin-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "17-admin-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "17-admin-e0",
+      "source": "17-admin-n0",
+      "target": "17-admin-n1"
+    },
+    {
+      "id": "17-admin-e1",
+      "source": "17-admin-n1",
+      "target": "17-admin-n2"
+    },
+    {
+      "id": "17-admin-e2",
+      "source": "17-admin-n2",
+      "target": "17-admin-n3"
+    },
+    {
+      "id": "17-admin-e3",
+      "source": "17-admin-n3",
+      "target": "17-admin-n4"
+    },
+    {
+      "id": "17-admin-e4",
+      "source": "17-admin-n4",
+      "target": "17-admin-n5"
+    },
+    {
+      "id": "17-admin-e5",
+      "source": "17-admin-n5",
+      "target": "17-admin-n6"
+    },
+    {
+      "id": "17-admin-fail-17-admin-n1",
+      "source": "17-admin-n1",
+      "target": "17-admin-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "17-admin-fail-end",
+      "source": "17-admin-error",
+      "target": "17-admin-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified."
+  ]
+}
