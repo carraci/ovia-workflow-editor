@@ -1,0 +1,10 @@
+import type {Workflow,WorkflowNode,WorkflowEdge,Category} from './types';
+export const width:number,height:number;
+export const colors:Record<Category,string>;
+export type PositionedNode=WorkflowNode&{position:{x:number;y:number}};
+export type RoutedEdge=WorkflowEdge&{points:{x:number;y:number}[];labelPosition:{x:number;y:number}|null};
+export function arrange(nodes:WorkflowNode[],edges:WorkflowEdge[],direction?:'LR'|'TB'):{nodes:PositionedNode[];edges:RoutedEdge[];width:number;height:number};
+export function wrap(text:string,max?:number,lines?:number):string[];
+export function routePositions(nodes:PositionedNode[],edges:WorkflowEdge[]):{nodes:PositionedNode[];edges:RoutedEdge[]};
+export function svgGraph(workflow:Workflow,provided?:{nodes:PositionedNode[];edges:RoutedEdge[]}):string;
+export function auditGraph(nodes:{id:string;label?:string;position?:{x:number;y:number}}[],edges:{id:string;source:string;target:string}[]):string[];
