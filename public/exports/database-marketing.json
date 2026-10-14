@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "database-marketing",
+  "title": "Marketing & editorial data",
+  "subtitle": "Collection boundaries and source-backed data references",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Domain persistence request",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Application services query the collections listed in this domain.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "database-marketing-n0"
+    },
+    {
+      "label": "campaigns",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection campaigns; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 11,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 45,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 178,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-marketing-n1"
+    },
+    {
+      "label": "campaignEvents",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection campaignEvents; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 20,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 50,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-marketing-n2"
+    },
+    {
+      "label": "newsletter_subscribers",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection newsletter_subscribers; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/newsletter/route.ts",
+          "line": 22,
+          "symbol": "put"
+        }
+      ],
+      "id": "database-marketing-n3"
+    },
+    {
+      "label": "stories",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection stories; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 11,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 16,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 16,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 21,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 21,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 46,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 46,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/whats-new/page.tsx",
+          "line": 31,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 269,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 98,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 528,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/stories.ts",
+          "line": 309,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/stories.ts",
+          "line": 422,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/stories.ts",
+          "line": 467,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/stories.ts",
+          "line": 510,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-marketing-n4"
+    },
+    {
+      "label": "bulk_orders",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection bulk_orders; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/bulk-orders/route.ts",
+          "line": 142,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/bulk-orders/route.ts",
+          "line": 194,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/bulk-orders/route.ts",
+          "line": 196,
+          "symbol": "find"
+        }
+      ],
+      "id": "database-marketing-n5"
+    },
+    {
+      "label": "Stored domain response",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Return persisted domain data to the service.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 100,
+          "symbol": "export async function readRepository"
+        }
+      ],
+      "id": "database-marketing-n6"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-marketing-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-marketing-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "database-marketing-e0",
+      "source": "database-marketing-n0",
+      "target": "database-marketing-n1"
+    },
+    {
+      "id": "database-marketing-e1",
+      "source": "database-marketing-n1",
+      "target": "database-marketing-n2"
+    },
+    {
+      "id": "database-marketing-e2",
+      "source": "database-marketing-n2",
+      "target": "database-marketing-n3"
+    },
+    {
+      "id": "database-marketing-e3",
+      "source": "database-marketing-n3",
+      "target": "database-marketing-n4"
+    },
+    {
+      "id": "database-marketing-e4",
+      "source": "database-marketing-n4",
+      "target": "database-marketing-n5"
+    },
+    {
+      "id": "database-marketing-e5",
+      "source": "database-marketing-n5",
+      "target": "database-marketing-n6"
+    },
+    {
+      "id": "database-marketing-fail-database-marketing-n0",
+      "source": "database-marketing-n0",
+      "target": "database-marketing-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "database-marketing-fail-end",
+      "source": "database-marketing-error",
+      "target": "database-marketing-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "orders.campaignId -> campaigns.id (src/server/commerce.ts:178)",
+    "campaignEvents.campaignId -> campaign identity (src/server/campaigns.ts:17)"
+  ]
+}

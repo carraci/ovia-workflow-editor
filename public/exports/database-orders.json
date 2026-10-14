@@ -1,0 +1,820 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "database-orders",
+  "title": "Orders, payments & shipments",
+  "subtitle": "Collection boundaries and source-backed data references",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Domain persistence request",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Application services query the collections listed in this domain.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "database-orders-n0"
+    },
+    {
+      "label": "orders",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection orders; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/orders/[id]/document/route.ts",
+          "line": 16,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/email/route.ts",
+          "line": 14,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/return-request/route.ts",
+          "line": 15,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/route.ts",
+          "line": 27,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/shipping-label/route.ts",
+          "line": 16,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/tracking/route.ts",
+          "line": 22,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/shipping/route.ts",
+          "line": 30,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/app/api/orders/[orderId]/tracking/route.ts",
+          "line": 20,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 14,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 311,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/orders/[id]/return/route.ts",
+          "line": 42,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 73,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 178,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 183,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 62,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 63,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 64,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 84,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 86,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 90,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 116,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 118,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 122,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 194,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 206,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 487,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 489,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 493,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 516,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 518,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 522,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 543,
+          "symbol": "put"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 78,
+          "symbol": "get"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 89,
+          "symbol": "get"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 103,
+          "symbol": "put"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 161,
+          "symbol": "get"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 193,
+          "symbol": "find"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 206,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 302,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 425,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1400,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1433,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1813,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/ai-copilot.ts",
+          "line": 72,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 61,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 156,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 179,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 197,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 128,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 138,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 184,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 206,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 208,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 219,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 240,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 299,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 311,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/customer-order.ts",
+          "line": 8,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 263,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 264,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 271,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 72,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 82,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 98,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 116,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 172,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 219,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 278,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 526,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 561,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 551,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 18,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 97,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 105,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 148,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 152,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 167,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 188,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 208,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 282,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 298,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 334,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 359,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 389,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 144,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 199,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 202,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 214,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 223,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 295,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 347,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 356,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 369,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 380,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 435,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 111,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 141,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 155,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 206,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 234,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 244,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 302,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 327,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 368,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 406,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 444,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 462,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 508,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 522,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 567,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 606,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 246,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-orders-n1"
+    },
+    {
+      "label": "events",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection events; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/content/blog-events/route.ts",
+          "line": 127,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/content/blog-events/route.ts",
+          "line": 195,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/content/blog-events/route.ts",
+          "line": 330,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/content/blog-events/route.ts",
+          "line": 336,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/content/blog-events/route.ts",
+          "line": 470,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 26,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 103,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 138,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 186,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 221,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 223,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 316,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 332,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 228,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 264,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/events-db.ts",
+          "line": 7,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 209,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 378,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 406,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 249,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-orders-n2"
+    },
+    {
+      "label": "order_return_requests",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection order_return_requests; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/orders/[id]/return-request/route.ts",
+          "line": 17,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/return-request/route.ts",
+          "line": 19,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/route.ts",
+          "line": 33,
+          "symbol": "get"
+        }
+      ],
+      "id": "database-orders-n3"
+    },
+    {
+      "label": "Stored domain response",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Return persisted domain data to the service.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 100,
+          "symbol": "export async function readRepository"
+        }
+      ],
+      "id": "database-orders-n4"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-orders-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-orders-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "database-orders-e0",
+      "source": "database-orders-n0",
+      "target": "database-orders-n1"
+    },
+    {
+      "id": "database-orders-e1",
+      "source": "database-orders-n1",
+      "target": "database-orders-n2"
+    },
+    {
+      "id": "database-orders-e2",
+      "source": "database-orders-n2",
+      "target": "database-orders-n3"
+    },
+    {
+      "id": "database-orders-e3",
+      "source": "database-orders-n3",
+      "target": "database-orders-n4"
+    },
+    {
+      "id": "database-orders-fail-database-orders-n0",
+      "source": "database-orders-n0",
+      "target": "database-orders-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "database-orders-fail-end",
+      "source": "database-orders-error",
+      "target": "database-orders-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "orders.userId / owner -> user identity (src/server/commerce.ts:171)",
+    "checkoutSessions.orderId -> orders.id (src/server/commerce.ts:191)",
+    "reviews.optional orderId -> orders.id (src/lib/types.ts:187)",
+    "tickets.orderId -> orders.id (src/server/care-order-requests.ts:73)",
+    "returns.orderRawId -> orders.id (src/server/admin-service.ts:1407)",
+    "orders.campaignId -> campaigns.id (src/server/commerce.ts:178)",
+    "PaymentInfo, providerId, captureId, refunds[], shipping and logisticsOperations are embedded on Order. No separate payment or shipment collection is asserted."
+  ]
+}

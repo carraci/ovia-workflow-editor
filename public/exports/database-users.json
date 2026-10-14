@@ -1,0 +1,783 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "database-users",
+  "title": "User & account data",
+  "subtitle": "Collection boundaries and source-backed data references",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Domain persistence request",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Application services query the collections listed in this domain.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "database-users-n0"
+    },
+    {
+      "label": "users",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection users; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/customers/route.ts",
+          "line": 59,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/customers/route.ts",
+          "line": 84,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 30,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 32,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 93,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 119,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 121,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 129,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/account/payment-preference/route.ts",
+          "line": 16,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/payment-preference/route.ts",
+          "line": 32,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/payment-preference/route.ts",
+          "line": 34,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 65,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 167,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 277,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 308,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 399,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 423,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 248,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 268,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 274,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 280,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/account-profile.ts",
+          "line": 142,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-profile.ts",
+          "line": 151,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-profile.ts",
+          "line": 180,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/account-wishlist.ts",
+          "line": 19,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-wishlist.ts",
+          "line": 41,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-wishlist.ts",
+          "line": 51,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 55,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 95,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 173,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 262,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 57,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1264,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1293,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1295,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1499,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/auth.ts",
+          "line": 133,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 141,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 324,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 268,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 77,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 81,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 99,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 57,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 59,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 143,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 160,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 405,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 420,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 425,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 455,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 182,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 243,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-users-n1"
+    },
+    {
+      "label": "sessions",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection sessions; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/security/route.ts",
+          "line": 17,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/security/route.ts",
+          "line": 25,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/security/route.ts",
+          "line": 25,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 77,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 97,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 120,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 127,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 366,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 368,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 377,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 382,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 402,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 405,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 46,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 93,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 164,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 288,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/auth.ts",
+          "line": 89,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/auth.ts",
+          "line": 122,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/auth.ts",
+          "line": 165,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 94,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 97,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 402,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 244,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-users-n2"
+    },
+    {
+      "label": "addresses",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection addresses; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 19,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 29,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 32,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 44,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 48,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 59,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 62,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 318,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 254,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-users-n3"
+    },
+    {
+      "label": "tokens",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection tokens; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 270,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 29,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 33,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 34,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 67,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 103,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 64,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 70,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 73,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 102,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 115,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 124,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 129,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 134,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 135,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 145,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 150,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 161,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 166,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 167,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 151,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 206,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 217,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 359,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 363,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 381,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 389,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 396,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 250,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-users-n4"
+    },
+    {
+      "label": "account_notifications",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection account_notifications; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 17,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 29,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 31,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/account-activity.ts",
+          "line": 12,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-activity.ts",
+          "line": 13,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 261,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 256,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-users-n5"
+    },
+    {
+      "label": "Stored domain response",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Return persisted domain data to the service.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 100,
+          "symbol": "export async function readRepository"
+        }
+      ],
+      "id": "database-users-n6"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-users-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-users-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "database-users-e0",
+      "source": "database-users-n0",
+      "target": "database-users-n1"
+    },
+    {
+      "id": "database-users-e1",
+      "source": "database-users-n1",
+      "target": "database-users-n2"
+    },
+    {
+      "id": "database-users-e2",
+      "source": "database-users-n2",
+      "target": "database-users-n3"
+    },
+    {
+      "id": "database-users-e3",
+      "source": "database-users-n3",
+      "target": "database-users-n4"
+    },
+    {
+      "id": "database-users-e4",
+      "source": "database-users-n4",
+      "target": "database-users-n5"
+    },
+    {
+      "id": "database-users-e5",
+      "source": "database-users-n5",
+      "target": "database-users-n6"
+    },
+    {
+      "id": "database-users-fail-database-users-n0",
+      "source": "database-users-n0",
+      "target": "database-users-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "database-users-fail-end",
+      "source": "database-users-error",
+      "target": "database-users-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "sessions.userId -> users.id (src/server/auth.ts:128)",
+    "addresses.userId -> users.id (src/app/api/v1/account/addresses/[[...id]]/route.ts:8)",
+    "orders.userId / owner -> user identity (src/server/commerce.ts:171)",
+    "reviews.userId -> users.id (src/app/api/v1/reviews/route.ts:63)",
+    "account_notifications.userId -> users.id (src/server/account-activity.ts:9)"
+  ]
+}

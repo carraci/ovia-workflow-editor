@@ -1,0 +1,461 @@
+{
+  "passed": true,
+  "diagrams": [
+    {
+      "diagram": "01-authentication",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 14,
+      "allNodeLabelsInPdf": true,
+      "pages": 6
+    },
+    {
+      "diagram": "02-catalog",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 10,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "03-search",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 9,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "04-wishlist-cart",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 11,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "05-checkout",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 9,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "06-payments",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 13,
+      "allNodeLabelsInPdf": true,
+      "pages": 6
+    },
+    {
+      "diagram": "07-orders",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 9,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "08-inventory",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 10,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "09-shipping",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 10,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "10-cancellation",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 10,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "11-returns-exchanges",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 9,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "12-refunds",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 11,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "13-reviews",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 8,
+      "allNodeLabelsInPdf": true,
+      "pages": 4
+    },
+    {
+      "diagram": "14-support",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 10,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "15-notifications",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 10,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "16-marketing",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 9,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "17-admin",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 9,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "18-reports",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 8,
+      "allNodeLabelsInPdf": true,
+      "pages": 4
+    },
+    {
+      "diagram": "19-security",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 9,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "20-master-commerce",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 14,
+      "allNodeLabelsInPdf": true,
+      "pages": 6
+    },
+    {
+      "diagram": "architecture-master",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 10,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "architecture-frontend",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 18,
+      "allNodeLabelsInPdf": true,
+      "pages": 8
+    },
+    {
+      "diagram": "architecture-backend",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 10,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "architecture-api",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 24,
+      "allNodeLabelsInPdf": true,
+      "pages": 9
+    },
+    {
+      "diagram": "architecture-database",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 56,
+      "allNodeLabelsInPdf": true,
+      "pages": 21
+    },
+    {
+      "diagram": "architecture-integrations",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 25,
+      "allNodeLabelsInPdf": true,
+      "pages": 11
+    },
+    {
+      "diagram": "database-users",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 9,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "database-catalog",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 8,
+      "allNodeLabelsInPdf": true,
+      "pages": 4
+    },
+    {
+      "diagram": "database-cart",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 8,
+      "allNodeLabelsInPdf": true,
+      "pages": 4
+    },
+    {
+      "diagram": "database-orders",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 7,
+      "allNodeLabelsInPdf": true,
+      "pages": 4
+    },
+    {
+      "diagram": "database-returns",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 7,
+      "allNodeLabelsInPdf": true,
+      "pages": 4
+    },
+    {
+      "diagram": "database-reviews",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 7,
+      "allNodeLabelsInPdf": true,
+      "pages": 4
+    },
+    {
+      "diagram": "database-support",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 19,
+      "allNodeLabelsInPdf": true,
+      "pages": 7
+    },
+    {
+      "diagram": "database-notifications",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 7,
+      "allNodeLabelsInPdf": true,
+      "pages": 4
+    },
+    {
+      "diagram": "database-admin",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 8,
+      "allNodeLabelsInPdf": true,
+      "pages": 4
+    },
+    {
+      "diagram": "database-marketing",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 9,
+      "allNodeLabelsInPdf": true,
+      "pages": 5
+    },
+    {
+      "diagram": "database-atlas-boundary",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 8,
+      "allNodeLabelsInPdf": true,
+      "pages": 4
+    },
+    {
+      "diagram": "database-entities",
+      "formats": [
+        "svg",
+        "png",
+        "pdf",
+        "json"
+      ],
+      "nodes": 21,
+      "allNodeLabelsInPdf": true,
+      "pages": 10
+    }
+  ]
+}

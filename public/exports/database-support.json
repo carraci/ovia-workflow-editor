@@ -1,0 +1,754 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "database-support",
+  "title": "Support & conversation data",
+  "subtitle": "Collection boundaries and source-backed data references",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Domain persistence request",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Application services query the collections listed in this domain.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 44,
+          "symbol": "function mongoRepo"
+        }
+      ],
+      "id": "database-support-n0"
+    },
+    {
+      "label": "support_attachments",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_attachments; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/support/attachments/[id]/route.ts",
+          "line": 18,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-attachments.ts",
+          "line": 64,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-attachments.ts",
+          "line": 80,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-attachments.ts",
+          "line": 95,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-attachments.ts",
+          "line": 133,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n1"
+    },
+    {
+      "label": "support_connections",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_connections; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/support/gmail/callback/route.ts",
+          "line": 58,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/support/gmail/route.ts",
+          "line": 39,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/support-gmail.ts",
+          "line": 274,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-google-auth.ts",
+          "line": 56,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n2"
+    },
+    {
+      "label": "support_conversations",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_conversations; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 453,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 457,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 470,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 474,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 210,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 101,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 105,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 130,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 166,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 216,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 97,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 182,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 204,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 330,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 334,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 394,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n3"
+    },
+    {
+      "label": "support_drafts",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_drafts; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 283,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 449,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 521,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n4"
+    },
+    {
+      "label": "support_email_receipts",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_email_receipts; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/support-gmail.ts",
+          "line": 153,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-gmail.ts",
+          "line": 258,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 274,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 284,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 371,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 403,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n5"
+    },
+    {
+      "label": "support_forwards",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_forwards; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 442,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 545,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n6"
+    },
+    {
+      "label": "support_labels",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_labels; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 343,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 352,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 524,
+          "symbol": "find"
+        }
+      ],
+      "id": "database-support-n7"
+    },
+    {
+      "label": "support_mailbox",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_mailbox; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 363,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 365,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 152,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 181,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 374,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 377,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 520,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n8"
+    },
+    {
+      "label": "support_messages",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_messages; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 231,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 54,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 74,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 89,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 127,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 666,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n9"
+    },
+    {
+      "label": "support_notes",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_notes; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 198,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 208,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 538,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 669,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n10"
+    },
+    {
+      "label": "support_scheduled",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_scheduled; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 305,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 310,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 313,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 455,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 491,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 522,
+          "symbol": "find"
+        }
+      ],
+      "id": "database-support-n11"
+    },
+    {
+      "label": "support_sent",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_sent; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 403,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 417,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 537,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n12"
+    },
+    {
+      "label": "support_settings",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_settings; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 367,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 525,
+          "symbol": "find"
+        }
+      ],
+      "id": "database-support-n13"
+    },
+    {
+      "label": "support_templates",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_templates; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 323,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 334,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 523,
+          "symbol": "find"
+        }
+      ],
+      "id": "database-support-n14"
+    },
+    {
+      "label": "support_tickets",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Code-backed collection support_tickets; view reference fields in the model inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/support/route.ts",
+          "line": 75,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/support/route.ts",
+          "line": 79,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/support/route.ts",
+          "line": 178,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 76,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 282,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 393,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "database-support-n15"
+    },
+    {
+      "label": "Stored domain response",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Return persisted domain data to the service.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 100,
+          "symbol": "export async function readRepository"
+        }
+      ],
+      "id": "database-support-n16"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-support-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "database-support-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "database-support-e0",
+      "source": "database-support-n0",
+      "target": "database-support-n1"
+    },
+    {
+      "id": "database-support-e1",
+      "source": "database-support-n1",
+      "target": "database-support-n2"
+    },
+    {
+      "id": "database-support-e2",
+      "source": "database-support-n2",
+      "target": "database-support-n3"
+    },
+    {
+      "id": "database-support-e3",
+      "source": "database-support-n3",
+      "target": "database-support-n4"
+    },
+    {
+      "id": "database-support-e4",
+      "source": "database-support-n4",
+      "target": "database-support-n5"
+    },
+    {
+      "id": "database-support-e5",
+      "source": "database-support-n5",
+      "target": "database-support-n6"
+    },
+    {
+      "id": "database-support-e6",
+      "source": "database-support-n6",
+      "target": "database-support-n7"
+    },
+    {
+      "id": "database-support-e7",
+      "source": "database-support-n7",
+      "target": "database-support-n8"
+    },
+    {
+      "id": "database-support-e8",
+      "source": "database-support-n8",
+      "target": "database-support-n9"
+    },
+    {
+      "id": "database-support-e9",
+      "source": "database-support-n9",
+      "target": "database-support-n10"
+    },
+    {
+      "id": "database-support-e10",
+      "source": "database-support-n10",
+      "target": "database-support-n11"
+    },
+    {
+      "id": "database-support-e11",
+      "source": "database-support-n11",
+      "target": "database-support-n12"
+    },
+    {
+      "id": "database-support-e12",
+      "source": "database-support-n12",
+      "target": "database-support-n13"
+    },
+    {
+      "id": "database-support-e13",
+      "source": "database-support-n13",
+      "target": "database-support-n14"
+    },
+    {
+      "id": "database-support-e14",
+      "source": "database-support-n14",
+      "target": "database-support-n15"
+    },
+    {
+      "id": "database-support-e15",
+      "source": "database-support-n15",
+      "target": "database-support-n16"
+    },
+    {
+      "id": "database-support-fail-database-support-n0",
+      "source": "database-support-n0",
+      "target": "database-support-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "database-support-fail-end",
+      "source": "database-support-error",
+      "target": "database-support-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "support_messages.ticketId -> conversation ID (src/server/support-conversations.ts:17)"
+  ]
+}
