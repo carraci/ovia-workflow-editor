@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "04-wishlist-cart",
+  "title": "Wishlist & cart management",
+  "subtitle": "Account wishlist, guest cart ownership and optimistic version checks",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Save item / add to bag",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Store provider coordinates catalog, wishlist and cart interactions.",
+      "evidence": [
+        {
+          "file": "src/components/store-provider.tsx",
+          "line": 1
+        }
+      ],
+      "id": "04-wishlist-cart-n0"
+    },
+    {
+      "label": "Cart mutation",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "PATCH and DELETE /api/v1/cart/items/:sku are also implemented.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 351,
+          "symbol": "path === \"cart/items\""
+        }
+      ],
+      "endpoint": "POST /api/v1/cart/items",
+      "id": "04-wishlist-cart-n1"
+    },
+    {
+      "label": "Resolve cart owner",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Signed-in user ID or SHA256-hashed guest cookie identifies the cart.",
+      "evidence": [
+        {
+          "file": "src/server/auth.ts",
+          "line": 168,
+          "symbol": "export async function cartOwner"
+        }
+      ],
+      "id": "04-wishlist-cart-n2"
+    },
+    {
+      "label": "Valid SKU and quantity?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Available variant, quantity 0-10 and optional cart version check; stale versions return 409.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 70,
+          "symbol": "export async function changeCart"
+        }
+      ],
+      "id": "04-wishlist-cart-n3"
+    },
+    {
+      "label": "Persist carts",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Cart contains id, lines[].sku, lines[].quantity and version.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 95,
+          "symbol": "version: cart.version + 1"
+        }
+      ],
+      "id": "04-wishlist-cart-n4"
+    },
+    {
+      "label": "Refresh bag totals",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Render server-confirmed line items and totals.",
+      "evidence": [
+        {
+          "file": "src/components/shopping-bag-drawer.tsx",
+          "line": 1
+        }
+      ],
+      "id": "04-wishlist-cart-n5"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "04-wishlist-cart-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "04-wishlist-cart-failure-end"
+    },
+    {
+      "label": "Account wishlist API",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "GET reads and DELETE removes saved items; authentication required.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/wishlist/route.ts",
+          "line": 18,
+          "symbol": "export function POST"
+        }
+      ],
+      "endpoint": "POST /api/v1/account/wishlist",
+      "id": "wishlist-0"
+    },
+    {
+      "label": "Validate saved variant",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Validate input and catalog SKU.",
+      "evidence": [
+        {
+          "file": "src/server/account-wishlist.ts",
+          "line": 25,
+          "symbol": "export async function changeAccountWishlist"
+        }
+      ],
+      "id": "wishlist-1"
+    },
+    {
+      "label": "users.accountWishlist",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Wishlist is embedded on users; no standalone wishlist collection is invented.",
+      "evidence": [
+        {
+          "file": "src/server/account-wishlist.ts",
+          "line": 51,
+          "symbol": "accountWishlist: next"
+        }
+      ],
+      "id": "wishlist-2"
+    }
+  ],
+  "edges": [
+    {
+      "id": "04-wishlist-cart-e0",
+      "source": "04-wishlist-cart-n0",
+      "target": "04-wishlist-cart-n1"
+    },
+    {
+      "id": "04-wishlist-cart-e1",
+      "source": "04-wishlist-cart-n1",
+      "target": "04-wishlist-cart-n2"
+    },
+    {
+      "id": "04-wishlist-cart-e2",
+      "source": "04-wishlist-cart-n2",
+      "target": "04-wishlist-cart-n3"
+    },
+    {
+      "id": "04-wishlist-cart-e3",
+      "source": "04-wishlist-cart-n3",
+      "target": "04-wishlist-cart-n4",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "04-wishlist-cart-e4",
+      "source": "04-wishlist-cart-n4",
+      "target": "04-wishlist-cart-n5"
+    },
+    {
+      "id": "04-wishlist-cart-fail-04-wishlist-cart-n3",
+      "source": "04-wishlist-cart-n3",
+      "target": "04-wishlist-cart-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "04-wishlist-cart-fail-end",
+      "source": "04-wishlist-cart-error",
+      "target": "04-wishlist-cart-failure-end",
+      "failure": true
+    },
+    {
+      "id": "wishlist-start",
+      "source": "04-wishlist-cart-n0",
+      "target": "wishlist-0",
+      "label": "Save item"
+    },
+    {
+      "id": "wishlist-0",
+      "source": "wishlist-0",
+      "target": "wishlist-1"
+    },
+    {
+      "id": "wishlist-1",
+      "source": "wishlist-1",
+      "target": "wishlist-2"
+    },
+    {
+      "id": "wishlist-end",
+      "source": "wishlist-2",
+      "target": "04-wishlist-cart-n5",
+      "label": "Saved wishlist"
+    },
+    {
+      "id": "wishlist-fail",
+      "source": "wishlist-0",
+      "target": "04-wishlist-cart-error",
+      "failure": true,
+      "label": "401 / invalid SKU"
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified."
+  ]
+}

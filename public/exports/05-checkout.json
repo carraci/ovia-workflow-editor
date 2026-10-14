@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "05-checkout",
+  "title": "Checkout & address validation",
+  "subtitle": "Indian address validation, shipping availability and authoritative pricing",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Review bag and address",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Checkout page collects customer address and shipping preferences.",
+      "evidence": [
+        {
+          "file": "src/app/checkout/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "05-checkout-n0"
+    },
+    {
+      "label": "Request shipping + quote",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Quote input is strict; origin and rate-limit checks apply.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/checkout/[[...action]]/route.ts",
+          "line": 43,
+          "symbol": "action.join(\"/\") === \"quote\""
+        }
+      ],
+      "endpoint": "POST /api/v1/checkout/quote",
+      "id": "05-checkout-n1"
+    },
+    {
+      "label": "Validate Indian address",
+      "category": "Backend",
+      "kind": "Validation",
+      "status": "Implemented",
+      "description": "Country IN, six-digit PIN, email, city and region. Checkout input requires a valid Indian mobile number.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 9,
+          "symbol": "export const addressSchema"
+        }
+      ],
+      "id": "05-checkout-n2"
+    },
+    {
+      "label": "Delhivery serviceability",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Checkout page separately calls shipping/serviceability for the PIN code. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/lib/shipping/delhivery.ts",
+          "line": 97,
+          "symbol": "checkServiceability"
+        }
+      ],
+      "id": "05-checkout-n3"
+    },
+    {
+      "label": "Server checkout pricing",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Price catalog lines, shipping and coupon rules using server records.",
+      "evidence": [
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 208,
+          "symbol": "checkoutQuote"
+        }
+      ],
+      "id": "05-checkout-n4"
+    },
+    {
+      "label": "Cart / coupons / settings",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Persisted cart version and current discount data are used to construct the quote.",
+      "evidence": [
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 115,
+          "symbol": "\"coupons\""
+        }
+      ],
+      "id": "05-checkout-n5"
+    },
+    {
+      "label": "Confirm authoritative total",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Frontend displays quote and passes quoteId to secure checkout.",
+      "evidence": [
+        {
+          "file": "src/app/checkout/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "05-checkout-n6"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "05-checkout-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "05-checkout-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "05-checkout-e0",
+      "source": "05-checkout-n0",
+      "target": "05-checkout-n1"
+    },
+    {
+      "id": "05-checkout-e1",
+      "source": "05-checkout-n1",
+      "target": "05-checkout-n2"
+    },
+    {
+      "id": "05-checkout-e2",
+      "source": "05-checkout-n2",
+      "target": "05-checkout-n3"
+    },
+    {
+      "id": "05-checkout-e3",
+      "source": "05-checkout-n3",
+      "target": "05-checkout-n4"
+    },
+    {
+      "id": "05-checkout-e4",
+      "source": "05-checkout-n4",
+      "target": "05-checkout-n5"
+    },
+    {
+      "id": "05-checkout-e5",
+      "source": "05-checkout-n5",
+      "target": "05-checkout-n6"
+    },
+    {
+      "id": "05-checkout-fail-05-checkout-n2",
+      "source": "05-checkout-n2",
+      "target": "05-checkout-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "05-checkout-fail-end",
+      "source": "05-checkout-error",
+      "target": "05-checkout-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "Serviceability is a separate frontend request, not a sequential call inside checkoutQuote. The diagram expresses the checkout interaction, not a single handler stack."
+  ]
+}

@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "01-authentication",
+  "title": "User registration & authentication",
+  "subtitle": "Password sign-in, email OTP, session creation and social identity",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Register or sign in",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Account authentication forms and verification experience.",
+      "evidence": [
+        {
+          "file": "src/components/auth-experience.tsx",
+          "line": 1
+        }
+      ],
+      "id": "01-authentication-n0"
+    },
+    {
+      "label": "POST authentication",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Registration and login share the dispatcher. Password, email and terms requirements differ.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 223,
+          "symbol": "path === \"auth/register\""
+        }
+      ],
+      "endpoint": "POST /api/v1/auth/register | /login",
+      "id": "01-authentication-n1"
+    },
+    {
+      "label": "Valid credentials?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Zod validation, password policy, duplicate email checks and scrypt password verification.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 244,
+          "symbol": "Passwords must match"
+        }
+      ],
+      "id": "01-authentication-n2"
+    },
+    {
+      "label": "Store / load user",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "users: id, email, passwordHash, verification and terms fields.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 268,
+          "symbol": "repo.put(\"users\", u)"
+        }
+      ],
+      "id": "01-authentication-n3"
+    },
+    {
+      "label": "Email verified?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Unverified accounts receive an email OTP. Verified accounts proceed to completeSignIn.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 282,
+          "symbol": "if (!user.verifiedAt)"
+        }
+      ],
+      "id": "01-authentication-n4"
+    },
+    {
+      "label": "Issue email verification OTP",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Generate and hash a one-time verification code with expiration and attempt limits.",
+      "evidence": [
+        {
+          "file": "src/server/recovery.ts",
+          "line": 184,
+          "symbol": "requestVerificationCode"
+        }
+      ],
+      "id": "01-authentication-n5"
+    },
+    {
+      "label": "Resend email delivery",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Email provider HTTP call; failures cannot be treated as successful delivery. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/mail.ts",
+          "line": 158,
+          "symbol": "export async function sendAccountEmail"
+        }
+      ],
+      "id": "01-authentication-n6"
+    },
+    {
+      "label": "Complete sign-in",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Merge guest cart and account state, then create the session.",
+      "evidence": [
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 4,
+          "symbol": "completeSignIn"
+        }
+      ],
+      "id": "01-authentication-n7"
+    },
+    {
+      "label": "Persist JWT session",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "HS256 JWT in HttpOnly cookie; hashed jti in sessions with userId and expiration.",
+      "evidence": [
+        {
+          "file": "src/server/auth.ts",
+          "line": 63,
+          "symbol": "export async function signIn"
+        }
+      ],
+      "id": "01-authentication-n8"
+    },
+    {
+      "label": "Account authenticated",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Successful sign-in returns safe user fields and navigates the customer account.",
+      "evidence": [
+        {
+          "file": "src/components/auth-experience.tsx",
+          "line": 1
+        }
+      ],
+      "id": "01-authentication-n9"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "01-authentication-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "01-authentication-failure-end"
+    },
+    {
+      "label": "Consume and verify email OTP",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Submitted code is compared with the hashed token, checked for expiry and attempt limits, then consumed.",
+      "evidence": [
+        {
+          "file": "src/server/recovery.ts",
+          "line": 193,
+          "symbol": "export async function verifyEmailCode"
+        }
+      ],
+      "id": "auth-otp-verify"
+    },
+    {
+      "label": "Google / Apple OAuth",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "State and PKCE flow, code exchange, JWKS identity verification and resolveSocialUser. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 118,
+          "symbol": "export async function prepareFlow"
+        }
+      ],
+      "id": "auth-oauth"
+    }
+  ],
+  "edges": [
+    {
+      "id": "01-authentication-e0",
+      "source": "01-authentication-n0",
+      "target": "01-authentication-n1"
+    },
+    {
+      "id": "01-authentication-e1",
+      "source": "01-authentication-n1",
+      "target": "01-authentication-n2"
+    },
+    {
+      "id": "01-authentication-e2",
+      "source": "01-authentication-n2",
+      "target": "01-authentication-n3",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "01-authentication-e3",
+      "source": "01-authentication-n3",
+      "target": "01-authentication-n4"
+    },
+    {
+      "id": "01-authentication-e5",
+      "source": "01-authentication-n5",
+      "target": "01-authentication-n6"
+    },
+    {
+      "id": "01-authentication-e7",
+      "source": "01-authentication-n7",
+      "target": "01-authentication-n8"
+    },
+    {
+      "id": "01-authentication-e8",
+      "source": "01-authentication-n8",
+      "target": "01-authentication-n9"
+    },
+    {
+      "id": "01-authentication-fail-01-authentication-n2",
+      "source": "01-authentication-n2",
+      "target": "01-authentication-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "01-authentication-fail-end",
+      "source": "01-authentication-error",
+      "target": "01-authentication-failure-end",
+      "failure": true
+    },
+    {
+      "id": "auth-verified",
+      "source": "01-authentication-n4",
+      "target": "01-authentication-n7",
+      "label": "Yes"
+    },
+    {
+      "id": "auth-otp",
+      "source": "01-authentication-n4",
+      "target": "01-authentication-n5",
+      "label": "No - verify OTP"
+    },
+    {
+      "id": "auth-email-verify",
+      "source": "01-authentication-n6",
+      "target": "auth-otp-verify",
+      "label": "Customer enters OTP"
+    },
+    {
+      "id": "auth-otp-signin",
+      "source": "auth-otp-verify",
+      "target": "01-authentication-n7",
+      "label": "Valid code"
+    },
+    {
+      "id": "auth-otp-reject",
+      "source": "auth-otp-verify",
+      "target": "01-authentication-error",
+      "label": "Invalid / expired OTP",
+      "failure": true
+    },
+    {
+      "id": "auth-social-start",
+      "source": "01-authentication-n0",
+      "target": "auth-oauth",
+      "label": "Social sign-in"
+    },
+    {
+      "id": "auth-social-success",
+      "source": "auth-oauth",
+      "target": "01-authentication-n7",
+      "label": "Identity verified"
+    },
+    {
+      "id": "auth-social-fail",
+      "source": "auth-oauth",
+      "target": "01-authentication-error",
+      "label": "Invalid state / token",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "The OTP delivery and verification nodes apply only to unverified email accounts. The Yes branch below bypasses OTP. Google and Apple use a separate OAuth branch."
+  ]
+}

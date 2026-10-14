@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "10-cancellation",
+  "title": "Order cancellation",
+  "subtitle": "Ownership, cancellation window, courier cancellation and payment reconciliation",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Confirm cancellation",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Customer confirms cancellation and optional reason.",
+      "evidence": [
+        {
+          "file": "src/components/account-order-details.tsx",
+          "line": 1
+        }
+      ],
+      "id": "10-cancellation-n0"
+    },
+    {
+      "label": "POST order cancellation",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Validate owner, deadline and confirmed=true payload.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 482,
+          "symbol": "route[2] === \"cancel\""
+        }
+      ],
+      "endpoint": "POST /api/v1/orders/:id/cancel",
+      "id": "10-cancellation-n1"
+    },
+    {
+      "label": "Cancellation allowed?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Expired deadline rejects the request; logistics checks prevent unsafe cancellation.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 505,
+          "symbol": "The cancellation deadline has passed"
+        }
+      ],
+      "id": "10-cancellation-n2"
+    },
+    {
+      "label": "Lease logistics operation",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Tracks processing, failed or confirmed phases on the order and audit entries.",
+      "evidence": [
+        {
+          "file": "src/server/logistics.ts",
+          "line": 69,
+          "symbol": "export function makeLogisticsService"
+        }
+      ],
+      "id": "10-cancellation-n3"
+    },
+    {
+      "label": "Cancel Delhivery shipment",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Cancel a shipment when present; courier confirmation is required before final reconciliation. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/lib/shipping/delhivery.ts",
+          "line": 396,
+          "symbol": "cancelShipment"
+        }
+      ],
+      "id": "10-cancellation-n4"
+    },
+    {
+      "label": "Reconcile Razorpay refund",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Captured Razorpay payment is reconciled through the refund service. Other providers require appropriate review.",
+      "evidence": [
+        {
+          "file": "src/server/logistics.ts",
+          "line": 507,
+          "symbol": "const refund = await deps.refund"
+        }
+      ],
+      "id": "10-cancellation-n5"
+    },
+    {
+      "label": "Release inventory once",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Update order cancellation, stock and audit; errors remain visible on logisticsOperations.cancel.",
+      "evidence": [
+        {
+          "file": "src/server/logistics.ts",
+          "line": 558,
+          "symbol": "inventoryReleased: true"
+        }
+      ],
+      "id": "10-cancellation-n6"
+    },
+    {
+      "label": "Cancellation outcome",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Customer sees confirmed or unresolved cancellation and refund status.",
+      "evidence": [
+        {
+          "file": "src/components/account-order-details.tsx",
+          "line": 1
+        }
+      ],
+      "id": "10-cancellation-n7"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/logistics.ts",
+          "line": 296,
+          "symbol": "courierWriteAttempted"
+        }
+      ],
+      "id": "10-cancellation-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/logistics.ts",
+          "line": 296,
+          "symbol": "courierWriteAttempted"
+        }
+      ],
+      "id": "10-cancellation-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "10-cancellation-e0",
+      "source": "10-cancellation-n0",
+      "target": "10-cancellation-n1"
+    },
+    {
+      "id": "10-cancellation-e1",
+      "source": "10-cancellation-n1",
+      "target": "10-cancellation-n2"
+    },
+    {
+      "id": "10-cancellation-e2",
+      "source": "10-cancellation-n2",
+      "target": "10-cancellation-n3",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "10-cancellation-e3",
+      "source": "10-cancellation-n3",
+      "target": "10-cancellation-n4"
+    },
+    {
+      "id": "10-cancellation-e4",
+      "source": "10-cancellation-n4",
+      "target": "10-cancellation-n5"
+    },
+    {
+      "id": "10-cancellation-e5",
+      "source": "10-cancellation-n5",
+      "target": "10-cancellation-n6"
+    },
+    {
+      "id": "10-cancellation-e6",
+      "source": "10-cancellation-n6",
+      "target": "10-cancellation-n7"
+    },
+    {
+      "id": "10-cancellation-fail-10-cancellation-n2",
+      "source": "10-cancellation-n2",
+      "target": "10-cancellation-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "10-cancellation-fail-end",
+      "source": "10-cancellation-error",
+      "target": "10-cancellation-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "A cancelled order does not itself prove the payment provider has completed a refund."
+  ]
+}

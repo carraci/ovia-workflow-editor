@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "07-orders",
+  "title": "Order creation & management",
+  "subtitle": "Idempotent order records, customer ownership and controlled fulfillment",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Place or view an order",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Customer order detail and post-checkout management.",
+      "evidence": [
+        {
+          "file": "src/components/account-order-details.tsx",
+          "line": 1
+        }
+      ],
+      "id": "07-orders-n0"
+    },
+    {
+      "label": "Idempotent createOrder",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Existing owner + idempotencyKey returns the prior compatible order; active checkout is reused.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 115,
+          "symbol": "export async function createOrder"
+        }
+      ],
+      "id": "07-orders-n1"
+    },
+    {
+      "label": "Quote and stock still valid?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Empty carts, changed quoteId, incompatible providers and insufficient stock are rejected.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 154,
+          "symbol": "Your bag or pricing changed"
+        }
+      ],
+      "id": "07-orders-n2"
+    },
+    {
+      "label": "Persist orders",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Order contains address, line snapshots, provider IDs, owner, userId and expiry.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 184,
+          "symbol": "await repo.put(\"orders\", order)"
+        }
+      ],
+      "id": "07-orders-n3"
+    },
+    {
+      "label": "Read customer order",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Lookup by ID or order number; ownership and allowed staff roles are checked.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 79,
+          "symbol": "route[0] === \"orders\" && route.length === 2"
+        }
+      ],
+      "endpoint": "GET /api/v1/orders/:id",
+      "id": "07-orders-n4"
+    },
+    {
+      "label": "Owner or allowed staff?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Unauthorized access returns 403; owner and idempotencyKey fields are removed from public responses.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 105,
+          "symbol": "if (!isOwner && !isStaff)"
+        }
+      ],
+      "id": "07-orders-n5"
+    },
+    {
+      "label": "Safe order details",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Render payment state and courier-verified shipping data.",
+      "evidence": [
+        {
+          "file": "src/components/account-order-details.tsx",
+          "line": 1
+        }
+      ],
+      "id": "07-orders-n6"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "07-orders-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "07-orders-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "07-orders-e0",
+      "source": "07-orders-n0",
+      "target": "07-orders-n1"
+    },
+    {
+      "id": "07-orders-e1",
+      "source": "07-orders-n1",
+      "target": "07-orders-n2"
+    },
+    {
+      "id": "07-orders-e2",
+      "source": "07-orders-n2",
+      "target": "07-orders-n3",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "07-orders-e3",
+      "source": "07-orders-n3",
+      "target": "07-orders-n4"
+    },
+    {
+      "id": "07-orders-e4",
+      "source": "07-orders-n4",
+      "target": "07-orders-n5"
+    },
+    {
+      "id": "07-orders-e5",
+      "source": "07-orders-n5",
+      "target": "07-orders-n6",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "07-orders-fail-07-orders-n2",
+      "source": "07-orders-n2",
+      "target": "07-orders-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "07-orders-fail-07-orders-n5",
+      "source": "07-orders-n5",
+      "target": "07-orders-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "07-orders-fail-end",
+      "source": "07-orders-error",
+      "target": "07-orders-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified."
+  ]
+}

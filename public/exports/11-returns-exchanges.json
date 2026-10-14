@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "11-returns-exchanges",
+  "title": "Returns & exchanges",
+  "subtitle": "Implemented request and approval; replacement fulfillment is a proposed extension",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Choose return / exchange",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Return and exchange forms collect reason, pickup details, items and optional replacement SKU.",
+      "evidence": [
+        {
+          "file": "src/components/product-exchange-form.tsx",
+          "line": 1
+        }
+      ],
+      "id": "11-returns-exchanges-n0"
+    },
+    {
+      "label": "POST return request",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Strict input schema and customerOrder ownership check.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/orders/[id]/return/route.ts",
+          "line": 31,
+          "symbol": "export async function POST"
+        }
+      ],
+      "endpoint": "POST /api/v1/orders/:id/return",
+      "id": "11-returns-exchanges-n1"
+    },
+    {
+      "label": "Delivered and within window?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Paid courier-confirmed delivery, no active refund and unexpired deadline are required. Exchange validates replacement availability without reserving it.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/orders/[id]/return/route.ts",
+          "line": 60,
+          "symbol": "A paid, courier-confirmed delivery"
+        }
+      ],
+      "id": "11-returns-exchanges-n2"
+    },
+    {
+      "label": "Create care review ticket",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Idempotent tickets and support conversation capture the requested order action.",
+      "evidence": [
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 131,
+          "symbol": "export async function createCareTicket"
+        }
+      ],
+      "id": "11-returns-exchanges-n3"
+    },
+    {
+      "label": "tickets + returns decision",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Admin approves or rejects the request; returns stores inspection decision and links ticketId/orderRawId.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1427,
+          "symbol": "export async function updateReturnStatus"
+        }
+      ],
+      "id": "11-returns-exchanges-n4"
+    },
+    {
+      "label": "Request status visible",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Customer can follow the support request; approval does not disburse funds.",
+      "evidence": [
+        {
+          "file": "src/components/account-orders-returns.tsx",
+          "line": 1
+        }
+      ],
+      "id": "11-returns-exchanges-n5"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "11-returns-exchanges-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "11-returns-exchanges-failure-end"
+    },
+    {
+      "label": "Arrange replacement fulfillment",
+      "category": "Admin",
+      "kind": "Backend Service",
+      "status": "Planned",
+      "description": "Proposed extension: reserve replacement stock, arrange reverse pickup and issue a replacement order after inspection. No implementation mapping is claimed.",
+      "evidence": [],
+      "id": "exchange-planned"
+    }
+  ],
+  "edges": [
+    {
+      "id": "11-returns-exchanges-e0",
+      "source": "11-returns-exchanges-n0",
+      "target": "11-returns-exchanges-n1"
+    },
+    {
+      "id": "11-returns-exchanges-e1",
+      "source": "11-returns-exchanges-n1",
+      "target": "11-returns-exchanges-n2"
+    },
+    {
+      "id": "11-returns-exchanges-e2",
+      "source": "11-returns-exchanges-n2",
+      "target": "11-returns-exchanges-n3",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "11-returns-exchanges-e3",
+      "source": "11-returns-exchanges-n3",
+      "target": "11-returns-exchanges-n4"
+    },
+    {
+      "id": "11-returns-exchanges-e4",
+      "source": "11-returns-exchanges-n4",
+      "target": "11-returns-exchanges-n5"
+    },
+    {
+      "id": "11-returns-exchanges-fail-11-returns-exchanges-n2",
+      "source": "11-returns-exchanges-n2",
+      "target": "11-returns-exchanges-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "11-returns-exchanges-fail-end",
+      "source": "11-returns-exchanges-error",
+      "target": "11-returns-exchanges-failure-end",
+      "failure": true
+    },
+    {
+      "id": "exchange-proposed",
+      "source": "11-returns-exchanges-n4",
+      "target": "exchange-planned",
+      "label": "Proposed exchange extension",
+      "proposed": true
+    },
+    {
+      "id": "exchange-proposed-end",
+      "source": "exchange-planned",
+      "target": "11-returns-exchanges-n5",
+      "label": "Proposed outcome",
+      "proposed": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "No automatic replacement order creation, replacement stock reservation or reverse pickup execution was found in the reviewed return request and approval paths. Those steps are Planned."
+  ]
+}

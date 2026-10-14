@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "03-search",
+  "title": "Product search & filtering",
+  "subtitle": "Algolia search and database-backed catalog filtering are distinct paths",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Enter search or facets",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Instant search modal and catalog filter UI.",
+      "evidence": [
+        {
+          "file": "src/components/instant-search-modal.tsx",
+          "line": 1
+        }
+      ],
+      "id": "03-search-n0"
+    },
+    {
+      "label": "GET catalog search",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Query, limit and page are normalized; the route enforces a ten-second search timeout.",
+      "evidence": [
+        {
+          "file": "src/app/api/search/route.ts",
+          "line": 5,
+          "symbol": "export async function GET"
+        }
+      ],
+      "endpoint": "GET /api/search?q=…",
+      "id": "03-search-n1"
+    },
+    {
+      "label": "Algolia search index",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "searchSingleIndex queries the configured products index. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/lib/algolia.ts",
+          "line": 42,
+          "symbol": "export async function searchAlgoliaProducts"
+        }
+      ],
+      "id": "03-search-n2"
+    },
+    {
+      "label": "Search results",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Render returned hits and links to products.",
+      "evidence": [
+        {
+          "file": "src/components/instant-search-modal.tsx",
+          "line": 1
+        }
+      ],
+      "id": "03-search-n3"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Unavailable configuration, timeout or provider failure returns HTTP 503.",
+      "evidence": [
+        {
+          "file": "src/app/api/search/route.ts",
+          "line": 19,
+          "symbol": "} catch"
+        }
+      ],
+      "id": "03-search-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/app/api/search/route.ts",
+          "line": 19,
+          "symbol": "} catch"
+        }
+      ],
+      "id": "03-search-failure-end"
+    },
+    {
+      "label": "GET filtered catalog",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Database catalog filtering via filterProducts.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 46,
+          "symbol": "path === \"products\""
+        }
+      ],
+      "endpoint": "GET /api/v1/products | /search",
+      "id": "search-filter-0"
+    },
+    {
+      "label": "Filter catalog facets",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Category, department and other Filters constrain product results.",
+      "evidence": [
+        {
+          "file": "src/lib/catalog-filter.ts",
+          "line": 51,
+          "symbol": "filterProducts"
+        }
+      ],
+      "id": "search-filter-1"
+    },
+    {
+      "label": "Read products + stock",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Database catalog and SKU inventory balances.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 182,
+          "symbol": "export async function catalog"
+        }
+      ],
+      "id": "search-filter-2"
+    }
+  ],
+  "edges": [
+    {
+      "id": "03-search-e0",
+      "source": "03-search-n0",
+      "target": "03-search-n1"
+    },
+    {
+      "id": "03-search-e1",
+      "source": "03-search-n1",
+      "target": "03-search-n2"
+    },
+    {
+      "id": "03-search-e2",
+      "source": "03-search-n2",
+      "target": "03-search-n3"
+    },
+    {
+      "id": "03-search-fail-03-search-n1",
+      "source": "03-search-n1",
+      "target": "03-search-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "03-search-fail-end",
+      "source": "03-search-error",
+      "target": "03-search-failure-end",
+      "failure": true
+    },
+    {
+      "id": "search-filter-start",
+      "source": "03-search-n0",
+      "target": "search-filter-0",
+      "label": "Facets"
+    },
+    {
+      "id": "search-filter-1",
+      "source": "search-filter-0",
+      "target": "search-filter-2"
+    },
+    {
+      "id": "search-filter-2",
+      "source": "search-filter-2",
+      "target": "search-filter-1"
+    },
+    {
+      "id": "search-filter-results",
+      "source": "search-filter-1",
+      "target": "03-search-n3",
+      "label": "Filtered products"
+    },
+    {
+      "id": "search-filter-error",
+      "source": "search-filter-0",
+      "target": "03-search-error",
+      "failure": true,
+      "label": "DB unavailable"
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "GET /api/v1/products and /api/v1/search filter the MongoDB catalog; /api/search uses Algolia."
+  ]
+}

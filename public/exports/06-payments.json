@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "06-payments",
+  "title": "Payment processing & verification",
+  "subtitle": "Razorpay signed verification, provider reconciliation and webhook replay control",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Launch secure checkout",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Customer confirms the reviewed quote and starts provider checkout.",
+      "evidence": [
+        {
+          "file": "src/app/checkout/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "06-payments-n0"
+    },
+    {
+      "label": "Create Razorpay session",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Validate input, owner, origin and rate limits before beginRazorpayCheckout.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/payments/razorpay/[[...action]]/route.ts",
+          "line": 27,
+          "symbol": "action.join(\"/\") === \"sessions\""
+        }
+      ],
+      "endpoint": "POST /api/v1/payments/razorpay/sessions",
+      "id": "06-payments-n1"
+    },
+    {
+      "label": "Create local payment order",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "createOrder reserves stock and creates a durable order; provider order data is attached.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 322,
+          "symbol": "export async function beginRazorpayCheckout"
+        }
+      ],
+      "id": "06-payments-n2"
+    },
+    {
+      "label": "Razorpay Orders API",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Authenticated provider requests create and retrieve payment orders. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 109,
+          "symbol": "async function providerRequest"
+        }
+      ],
+      "id": "06-payments-n3"
+    },
+    {
+      "label": "POST signed verification",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "verifyRazorpayPayment validates returned payment identifiers and signature.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/payments/razorpay/[[...action]]/route.ts",
+          "line": 48,
+          "symbol": "action.join(\"/\") === \"verify\""
+        }
+      ],
+      "endpoint": "POST /api/v1/payments/razorpay/verify",
+      "id": "06-payments-n4"
+    },
+    {
+      "label": "Captured payment matches?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Amount, currency, remote order identity and capture status must match the local order.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 179,
+          "symbol": "function verifyRemotePayment"
+        }
+      ],
+      "id": "06-payments-n5"
+    },
+    {
+      "label": "Finalize payment",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Duplicate events are checked; timely captures become paid, late captures require refund review.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 211,
+          "symbol": "export async function finalizePayment"
+        }
+      ],
+      "id": "06-payments-n6"
+    },
+    {
+      "label": "orders + events + outbox",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Payment metadata remains on orders; event IDs protect replay; confirmation mail is queued only for confirmed purchases.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 7,
+          "symbol": "queueOrderConfirmation"
+        }
+      ],
+      "id": "06-payments-n7"
+    },
+    {
+      "label": "Order confirmation",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Customer receives verified order state, never an assumed successful capture.",
+      "evidence": [
+        {
+          "file": "src/app/orders/[id]/confirmation/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "06-payments-n8"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "06-payments-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "06-payments-failure-end"
+    },
+    {
+      "label": "Verified payment webhook",
+      "category": "API",
+      "kind": "Webhook",
+      "status": "Implemented",
+      "description": "Stripe, Razorpay and PayPal dispatch; signature verification precedes reconciliation.",
+      "evidence": [
+        {
+          "file": "src/app/api/webhooks/[provider]/route.ts",
+          "line": 13,
+          "symbol": "export async function POST"
+        }
+      ],
+      "id": "payment-webhook"
+    },
+    {
+      "label": "PayPal sandbox approval",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Create sandbox order, redirect approval, capture and verify provider response. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 45,
+          "symbol": "beginPayPalCheckout"
+        }
+      ],
+      "id": "payment-paypal"
+    }
+  ],
+  "edges": [
+    {
+      "id": "06-payments-e0",
+      "source": "06-payments-n0",
+      "target": "06-payments-n1"
+    },
+    {
+      "id": "06-payments-e1",
+      "source": "06-payments-n1",
+      "target": "06-payments-n2"
+    },
+    {
+      "id": "06-payments-e2",
+      "source": "06-payments-n2",
+      "target": "06-payments-n3"
+    },
+    {
+      "id": "06-payments-e3",
+      "source": "06-payments-n3",
+      "target": "06-payments-n4"
+    },
+    {
+      "id": "06-payments-e4",
+      "source": "06-payments-n4",
+      "target": "06-payments-n5"
+    },
+    {
+      "id": "06-payments-e5",
+      "source": "06-payments-n5",
+      "target": "06-payments-n6",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "06-payments-e6",
+      "source": "06-payments-n6",
+      "target": "06-payments-n7"
+    },
+    {
+      "id": "06-payments-e7",
+      "source": "06-payments-n7",
+      "target": "06-payments-n8"
+    },
+    {
+      "id": "06-payments-fail-06-payments-n5",
+      "source": "06-payments-n5",
+      "target": "06-payments-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "06-payments-fail-end",
+      "source": "06-payments-error",
+      "target": "06-payments-failure-end",
+      "failure": true
+    },
+    {
+      "id": "payment-event",
+      "source": "06-payments-n3",
+      "target": "payment-webhook",
+      "label": "Provider webhook"
+    },
+    {
+      "id": "payment-webhook-final",
+      "source": "payment-webhook",
+      "target": "06-payments-n6",
+      "label": "Verified event"
+    },
+    {
+      "id": "payment-webhook-fail",
+      "source": "payment-webhook",
+      "target": "06-payments-error",
+      "label": "Invalid signature",
+      "failure": true
+    },
+    {
+      "id": "payment-paypal-start",
+      "source": "06-payments-n0",
+      "target": "payment-paypal",
+      "label": "PayPal sandbox"
+    },
+    {
+      "id": "payment-paypal-final",
+      "source": "payment-paypal",
+      "target": "06-payments-n6",
+      "label": "Verified capture"
+    },
+    {
+      "id": "payment-paypal-fail",
+      "source": "payment-paypal",
+      "target": "06-payments-error",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "PayPal uses a separate implemented sandbox create/approve/capture flow. Legacy Stripe checkout is guarded to test credentials."
+  ]
+}

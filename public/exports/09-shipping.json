@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "09-shipping",
+  "title": "Shipping & delivery tracking",
+  "subtitle": "Paid order approval, Delhivery AWB, pickup and authenticated courier events",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Owner approves shipment",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Owner reviews order and initiates shipment / pickup.",
+      "evidence": [
+        {
+          "file": "src/app/admin/(control-center)/orders/[id]/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "09-shipping-n0"
+    },
+    {
+      "label": "Create shipment",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Authorized owner executes controlled logistics.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/orders/[id]/shipment/route.ts",
+          "line": 5,
+          "symbol": "export async function POST"
+        }
+      ],
+      "endpoint": "POST /api/admin/orders/:id/shipment",
+      "id": "09-shipping-n1"
+    },
+    {
+      "label": "Paid and eligible?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Payment capture, unrefunded state, package data and logistics lease checks prevent unsafe repeated actions.",
+      "evidence": [
+        {
+          "file": "src/server/logistics.ts",
+          "line": 189,
+          "symbol": "Only paid, unrefunded orders"
+        }
+      ],
+      "id": "09-shipping-n2"
+    },
+    {
+      "label": "Delhivery shipment + pickup",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Courier API returns AWB and shipment metadata; pickup is requested through the shipping service. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/lib/shipping/delhivery.ts",
+          "line": 152,
+          "symbol": "createShipment"
+        }
+      ],
+      "id": "09-shipping-n3"
+    },
+    {
+      "label": "orders.shipping",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Shipping data and logistics operation progress are embedded on the order.",
+      "evidence": [
+        {
+          "file": "src/server/logistics.ts",
+          "line": 172,
+          "symbol": "await repo.put(\"orders\", updated)"
+        }
+      ],
+      "id": "09-shipping-n4"
+    },
+    {
+      "label": "Courier webhook / refresh",
+      "category": "API",
+      "kind": "Webhook",
+      "status": "Implemented",
+      "description": "Courier events are authenticated; refresh route can also reconcile tracking.",
+      "evidence": [
+        {
+          "file": "src/app/api/webhooks/delhivery/route.ts",
+          "line": 8,
+          "symbol": "export async function POST"
+        }
+      ],
+      "id": "09-shipping-n5"
+    },
+    {
+      "label": "Normalize courier event",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Match AWB to stored order and map courier status into internal shipping status.",
+      "evidence": [
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 185,
+          "symbol": "export async function processShippingWebhook"
+        }
+      ],
+      "id": "09-shipping-n6"
+    },
+    {
+      "label": "Customer tracking timeline",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Only verified shipment information is shown to customers.",
+      "evidence": [
+        {
+          "file": "src/components/order-tracking.tsx",
+          "line": 1
+        }
+      ],
+      "id": "09-shipping-n7"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Ambiguous courier writes are tracked for review instead of falsely declaring shipment success.",
+      "evidence": [
+        {
+          "file": "src/server/logistics.ts",
+          "line": 296,
+          "symbol": "courierWriteAttempted"
+        }
+      ],
+      "id": "09-shipping-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/logistics.ts",
+          "line": 296,
+          "symbol": "courierWriteAttempted"
+        }
+      ],
+      "id": "09-shipping-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "09-shipping-e0",
+      "source": "09-shipping-n0",
+      "target": "09-shipping-n1"
+    },
+    {
+      "id": "09-shipping-e1",
+      "source": "09-shipping-n1",
+      "target": "09-shipping-n2"
+    },
+    {
+      "id": "09-shipping-e2",
+      "source": "09-shipping-n2",
+      "target": "09-shipping-n3",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "09-shipping-e3",
+      "source": "09-shipping-n3",
+      "target": "09-shipping-n4"
+    },
+    {
+      "id": "09-shipping-e4",
+      "source": "09-shipping-n4",
+      "target": "09-shipping-n5"
+    },
+    {
+      "id": "09-shipping-e5",
+      "source": "09-shipping-n5",
+      "target": "09-shipping-n6"
+    },
+    {
+      "id": "09-shipping-e6",
+      "source": "09-shipping-n6",
+      "target": "09-shipping-n7"
+    },
+    {
+      "id": "09-shipping-fail-09-shipping-n2",
+      "source": "09-shipping-n2",
+      "target": "09-shipping-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "09-shipping-fail-end",
+      "source": "09-shipping-error",
+      "target": "09-shipping-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified."
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "08-inventory",
+  "title": "Inventory & stock updates",
+  "subtitle": "Reservation, expiration release and audited owner adjustments",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Checkout or expiry trigger",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Reservation runs within checkout order creation; expiry runs via protected cron.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 115,
+          "symbol": "export async function createOrder"
+        }
+      ],
+      "id": "08-inventory-n0"
+    },
+    {
+      "label": "Read SKU balance",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "inventory.id equals variant SKU; available quantity is loaded or derived from product variants.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 104,
+          "symbol": "type Inventory"
+        }
+      ],
+      "id": "08-inventory-n1"
+    },
+    {
+      "label": "Sufficient available stock?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Reject overselling with HTTP 409 before updating the order.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 158,
+          "symbol": "stock.available < line.quantity"
+        }
+      ],
+      "id": "08-inventory-n2"
+    },
+    {
+      "label": "Reserve stock atomically",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Balance decrement and order insert share the MongoDB transaction.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 165,
+          "symbol": "available: stock.available - line.quantity"
+        }
+      ],
+      "id": "08-inventory-n3"
+    },
+    {
+      "label": "Release expired reservation",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Expiry code releases nonfinal inventory once; cancellation has its own release path.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 296,
+          "symbol": "export async function expireOrders"
+        }
+      ],
+      "id": "08-inventory-n4"
+    },
+    {
+      "label": "Update inventory + order",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "inventoryReleased protects repeated release.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 231,
+          "symbol": "inventoryReleased"
+        }
+      ],
+      "id": "08-inventory-n5"
+    },
+    {
+      "label": "Updated availability",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Catalog overlays inventory on variant stock.",
+      "evidence": [
+        {
+          "file": "src/components/product-detail.tsx",
+          "line": 1
+        }
+      ],
+      "id": "08-inventory-n6"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "08-inventory-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "08-inventory-failure-end"
+    },
+    {
+      "label": "Owner stock adjustment",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "PATCH /api/admin/inventory updates inventory, product variant stock, inventoryMovements and audit.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1215,
+          "symbol": "export async function adjustInventoryStock"
+        }
+      ],
+      "id": "inventory-adjust"
+    }
+  ],
+  "edges": [
+    {
+      "id": "08-inventory-e0",
+      "source": "08-inventory-n0",
+      "target": "08-inventory-n1"
+    },
+    {
+      "id": "08-inventory-e1",
+      "source": "08-inventory-n1",
+      "target": "08-inventory-n2"
+    },
+    {
+      "id": "08-inventory-e2",
+      "source": "08-inventory-n2",
+      "target": "08-inventory-n3",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "08-inventory-e3",
+      "source": "08-inventory-n3",
+      "target": "08-inventory-n4"
+    },
+    {
+      "id": "08-inventory-e4",
+      "source": "08-inventory-n4",
+      "target": "08-inventory-n5"
+    },
+    {
+      "id": "08-inventory-e5",
+      "source": "08-inventory-n5",
+      "target": "08-inventory-n6"
+    },
+    {
+      "id": "08-inventory-fail-08-inventory-n2",
+      "source": "08-inventory-n2",
+      "target": "08-inventory-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "08-inventory-fail-end",
+      "source": "08-inventory-error",
+      "target": "08-inventory-failure-end",
+      "failure": true
+    },
+    {
+      "id": "stock-adjust",
+      "source": "08-inventory-n0",
+      "target": "inventory-adjust",
+      "label": "Owner adjustment"
+    },
+    {
+      "id": "stock-adjust-end",
+      "source": "inventory-adjust",
+      "target": "08-inventory-n6"
+    },
+    {
+      "id": "stock-adjust-fail",
+      "source": "inventory-adjust",
+      "target": "08-inventory-error",
+      "failure": true,
+      "label": "Invalid adjustment"
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified."
+  ]
+}

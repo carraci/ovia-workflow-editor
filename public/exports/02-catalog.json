@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "02-catalog",
+  "title": "Product & catalog management",
+  "subtitle": "Owner-controlled product publishing, taxonomy and index updates",
+  "group": "Business workflows",
+  "nodes": [
+    {
+      "label": "Edit product or category",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Owner catalog editor; create, update or remove catalog records.",
+      "evidence": [
+        {
+          "file": "src/components/admin/product-editor.tsx",
+          "line": 1
+        }
+      ],
+      "id": "02-catalog-n0"
+    },
+    {
+      "label": "Admin product / category API",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Category CRUD has its own routes; inspect the API inventory for each method.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/products/route.ts",
+          "line": 29,
+          "symbol": "export async function POST"
+        }
+      ],
+      "endpoint": "POST /api/admin/products",
+      "id": "02-catalog-n1"
+    },
+    {
+      "label": "Authorize store owner",
+      "category": "Admin",
+      "kind": "Authentication",
+      "status": "Implemented",
+      "description": "JWT session plus normalized OWNER or ADMIN role.",
+      "evidence": [
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 107,
+          "symbol": "export async function authorizeAdminApi"
+        }
+      ],
+      "id": "02-catalog-n2"
+    },
+    {
+      "label": "Create / update catalog",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Server normalizes product data, variants and media. Category records are maintained separately.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 678,
+          "symbol": "export async function createAdminProduct"
+        }
+      ],
+      "id": "02-catalog-n3"
+    },
+    {
+      "label": "Products and categories",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Persist actual catalog collections; category matching includes name, slug and department logic rather than a declared foreign key.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1092,
+          "symbol": "export async function createAdminCategory"
+        }
+      ],
+      "id": "02-catalog-n4"
+    },
+    {
+      "label": "Sync Algolia index",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Writes run only when a write key exists. Index errors are logged and are non-blocking. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/lib/algolia.ts",
+          "line": 85,
+          "symbol": "export async function saveAlgoliaProduct"
+        }
+      ],
+      "id": "02-catalog-n5"
+    },
+    {
+      "label": "Publication & stock filter",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Storefront excludes unpublished, draft, archived and imported/demo records and overlays inventory balances.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 182,
+          "symbol": "export async function catalog"
+        }
+      ],
+      "id": "02-catalog-n6"
+    },
+    {
+      "label": "Updated storefront catalog",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Catalog listings display published products and supported facets.",
+      "evidence": [
+        {
+          "file": "src/components/catalog-view.tsx",
+          "line": 1
+        }
+      ],
+      "id": "02-catalog-n7"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "02-catalog-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "02-catalog-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "02-catalog-e0",
+      "source": "02-catalog-n0",
+      "target": "02-catalog-n1"
+    },
+    {
+      "id": "02-catalog-e1",
+      "source": "02-catalog-n1",
+      "target": "02-catalog-n2"
+    },
+    {
+      "id": "02-catalog-e2",
+      "source": "02-catalog-n2",
+      "target": "02-catalog-n3"
+    },
+    {
+      "id": "02-catalog-e3",
+      "source": "02-catalog-n3",
+      "target": "02-catalog-n4"
+    },
+    {
+      "id": "02-catalog-e4",
+      "source": "02-catalog-n4",
+      "target": "02-catalog-n5"
+    },
+    {
+      "id": "02-catalog-e5",
+      "source": "02-catalog-n5",
+      "target": "02-catalog-n6"
+    },
+    {
+      "id": "02-catalog-e6",
+      "source": "02-catalog-n6",
+      "target": "02-catalog-n7"
+    },
+    {
+      "id": "02-catalog-fail-02-catalog-n2",
+      "source": "02-catalog-n2",
+      "target": "02-catalog-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "02-catalog-fail-end",
+      "source": "02-catalog-error",
+      "target": "02-catalog-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "Algolia synchronization is optional and best effort; successful database writes do not prove the search index was updated."
+  ]
+}
