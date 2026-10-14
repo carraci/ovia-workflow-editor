@@ -1,0 +1,312 @@
+{
+  "passed": true,
+  "verifiedAt": "2026-10-14T08:50:28.200Z",
+  "checks": [
+    {
+      "workflow": "01-authentication",
+      "nodes": 14,
+      "edges": 17,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 10
+    },
+    {
+      "workflow": "02-catalog",
+      "nodes": 10,
+      "edges": 9,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "03-search",
+      "nodes": 9,
+      "edges": 10,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 4
+    },
+    {
+      "workflow": "04-wishlist-cart",
+      "nodes": 11,
+      "edges": 12,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 5
+    },
+    {
+      "workflow": "05-checkout",
+      "nodes": 9,
+      "edges": 8,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "06-payments",
+      "nodes": 13,
+      "edges": 16,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 7
+    },
+    {
+      "workflow": "07-orders",
+      "nodes": 9,
+      "edges": 9,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 4
+    },
+    {
+      "workflow": "08-inventory",
+      "nodes": 10,
+      "edges": 11,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 4
+    },
+    {
+      "workflow": "09-shipping",
+      "nodes": 10,
+      "edges": 9,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 2
+    },
+    {
+      "workflow": "10-cancellation",
+      "nodes": 10,
+      "edges": 9,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 2
+    },
+    {
+      "workflow": "11-returns-exchanges",
+      "nodes": 9,
+      "edges": 9,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 4
+    },
+    {
+      "workflow": "12-refunds",
+      "nodes": 11,
+      "edges": 10,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 2
+    },
+    {
+      "workflow": "13-reviews",
+      "nodes": 8,
+      "edges": 7,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "14-support",
+      "nodes": 10,
+      "edges": 9,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "15-notifications",
+      "nodes": 10,
+      "edges": 9,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "16-marketing",
+      "nodes": 9,
+      "edges": 8,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 2
+    },
+    {
+      "workflow": "17-admin",
+      "nodes": 9,
+      "edges": 8,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "18-reports",
+      "nodes": 8,
+      "edges": 7,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "19-security",
+      "nodes": 9,
+      "edges": 10,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 4
+    },
+    {
+      "workflow": "20-master-commerce",
+      "nodes": 14,
+      "edges": 13,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 2
+    },
+    {
+      "workflow": "architecture-master",
+      "nodes": 10,
+      "edges": 10,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 3
+    },
+    {
+      "workflow": "architecture-frontend",
+      "nodes": 18,
+      "edges": 26,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 10
+    },
+    {
+      "workflow": "architecture-backend",
+      "nodes": 10,
+      "edges": 10,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 2
+    },
+    {
+      "workflow": "architecture-api",
+      "nodes": 24,
+      "edges": 39,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "architecture-database",
+      "nodes": 56,
+      "edges": 119,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 66
+    },
+    {
+      "workflow": "architecture-integrations",
+      "nodes": 25,
+      "edges": 63,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 41
+    },
+    {
+      "workflow": "database-users",
+      "nodes": 9,
+      "edges": 8,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "database-catalog",
+      "nodes": 8,
+      "edges": 7,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "database-cart",
+      "nodes": 8,
+      "edges": 7,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "database-orders",
+      "nodes": 7,
+      "edges": 6,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "database-returns",
+      "nodes": 7,
+      "edges": 6,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "database-reviews",
+      "nodes": 7,
+      "edges": 6,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "database-support",
+      "nodes": 19,
+      "edges": 18,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "database-notifications",
+      "nodes": 7,
+      "edges": 6,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "database-admin",
+      "nodes": 8,
+      "edges": 7,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "database-marketing",
+      "nodes": 9,
+      "edges": 8,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 1
+    },
+    {
+      "workflow": "database-atlas-boundary",
+      "nodes": 8,
+      "edges": 7,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 2
+    },
+    {
+      "workflow": "database-entities",
+      "nodes": 21,
+      "edges": 52,
+      "graphIssues": 0,
+      "connectorNodeCollisions": 0,
+      "labelsChecked": 51
+    }
+  ],
+  "issues": [],
+  "scope": "Graph connectivity, start/end paths, source evidence locations, node rectangles and connector/node intersections. Edge crossings can exist in dense graphs; crossings are not connections. Runtime provider operation was not tested."
+}

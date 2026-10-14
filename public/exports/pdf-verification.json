@@ -1,0 +1,242 @@
+[
+  {
+    "file": "01-authentication.pdf",
+    "pages": 6,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "02-catalog.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "03-search.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "04-wishlist-cart.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "05-checkout.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "06-payments.pdf",
+    "pages": 6,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "07-orders.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "08-inventory.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "09-shipping.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "10-cancellation.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "11-returns-exchanges.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "12-refunds.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "13-reviews.pdf",
+    "pages": 4,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "14-support.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "15-notifications.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "16-marketing.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "17-admin.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "18-reports.pdf",
+    "pages": 4,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "19-security.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "20-master-commerce.pdf",
+    "pages": 6,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "architecture-master.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "architecture-frontend.pdf",
+    "pages": 8,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "architecture-backend.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "architecture-api.pdf",
+    "pages": 9,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "architecture-database.pdf",
+    "pages": 21,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "architecture-integrations.pdf",
+    "pages": 11,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-users.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-catalog.pdf",
+    "pages": 4,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-cart.pdf",
+    "pages": 4,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-orders.pdf",
+    "pages": 4,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-returns.pdf",
+    "pages": 4,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-reviews.pdf",
+    "pages": 4,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-support.pdf",
+    "pages": 7,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-notifications.pdf",
+    "pages": 4,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-admin.pdf",
+    "pages": 4,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-marketing.pdf",
+    "pages": 5,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-atlas-boundary.pdf",
+    "pages": 4,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "database-entities.pdf",
+    "pages": 10,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "ovia-complete-workflow-atlas.pdf",
+    "pages": 219,
+    "a4Landscape": true,
+    "textPresent": true
+  },
+  {
+    "file": "ovia-master-architecture.pdf",
+    "pages": 79,
+    "a4Landscape": true,
+    "textPresent": true
+  }
+]
