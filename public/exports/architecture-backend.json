@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "architecture-backend",
+  "title": "Backend request lifecycle",
+  "subtitle": "Route-local guards, handlers, service calls, persistence and response",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "HTTP request received",
+      "category": "API",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Next.js route receives request and promised path params.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 219,
+          "symbol": "export async function POST"
+        }
+      ],
+      "id": "architecture-backend-n0"
+    },
+    {
+      "label": "Resolve route handler",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "App Router file routes plus explicit catchall dispatch.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 45,
+          "symbol": "const path ="
+        }
+      ],
+      "endpoint": "/api/*",
+      "id": "architecture-backend-n1"
+    },
+    {
+      "label": "Applicable auth / origin guards",
+      "category": "Backend",
+      "kind": "Authentication",
+      "status": "Implemented",
+      "description": "Each handler decides which helpers apply; this is a representative guarded mutation lifecycle.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 15,
+          "symbol": "export function originCheck"
+        }
+      ],
+      "id": "architecture-backend-n2"
+    },
+    {
+      "label": "Validate body and input",
+      "category": "Backend",
+      "kind": "Validation",
+      "status": "Implemented",
+      "description": "Streaming body cap and Zod validation where explicitly called.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 36,
+          "symbol": "export async function body"
+        }
+      ],
+      "id": "architecture-backend-n3"
+    },
+    {
+      "label": "Handler calls service",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Actual business rules and idempotency are in server modules.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 115,
+          "symbol": "export async function createOrder"
+        }
+      ],
+      "id": "architecture-backend-n4"
+    },
+    {
+      "label": "Repository / Mongo transaction",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Native database operations share a session when required.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 103,
+          "symbol": "export async function transaction"
+        }
+      ],
+      "id": "architecture-backend-n5"
+    },
+    {
+      "label": "Provider API when required",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "External writes are reconciled with durable local state; not all requests call a provider. Runtime configuration and connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 109,
+          "symbol": "async function providerRequest"
+        }
+      ],
+      "id": "architecture-backend-n6"
+    },
+    {
+      "label": "Return success JSON",
+      "category": "API",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Common wrapper returns {data}; other routes use documented custom response shapes.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-backend-n7"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-backend-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-backend-failure-end"
+    }
+  ],
+  "edges": [
+    {
+      "id": "architecture-backend-e0",
+      "source": "architecture-backend-n0",
+      "target": "architecture-backend-n1"
+    },
+    {
+      "id": "architecture-backend-e1",
+      "source": "architecture-backend-n1",
+      "target": "architecture-backend-n2"
+    },
+    {
+      "id": "architecture-backend-e2",
+      "source": "architecture-backend-n2",
+      "target": "architecture-backend-n3"
+    },
+    {
+      "id": "architecture-backend-e3",
+      "source": "architecture-backend-n3",
+      "target": "architecture-backend-n4"
+    },
+    {
+      "id": "architecture-backend-e4",
+      "source": "architecture-backend-n4",
+      "target": "architecture-backend-n5"
+    },
+    {
+      "id": "architecture-backend-e5",
+      "source": "architecture-backend-n5",
+      "target": "architecture-backend-n6"
+    },
+    {
+      "id": "architecture-backend-e6",
+      "source": "architecture-backend-n6",
+      "target": "architecture-backend-n7"
+    },
+    {
+      "id": "architecture-backend-fail-architecture-backend-n2",
+      "source": "architecture-backend-n2",
+      "target": "architecture-backend-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "architecture-backend-fail-architecture-backend-n3",
+      "source": "architecture-backend-n3",
+      "target": "architecture-backend-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "architecture-backend-fail-end",
+      "source": "architecture-backend-error",
+      "target": "architecture-backend-failure-end",
+      "failure": true
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "Source contains no central src/middleware.ts or src/proxy.ts. Guards are route-local and server-component-local. Logging is selective, not a universal centralized logging pipeline."
+  ]
+}

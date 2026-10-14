@@ -1,0 +1,4171 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "architecture-database",
+  "title": "Database collections & relationships",
+  "subtitle": "Native driver, code-backed collections and explicit reference fields",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Database service request",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Backend requests a shared MongoDB client.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 30,
+          "symbol": "export async function mongo"
+        }
+      ],
+      "id": "architecture-database-n0"
+    },
+    {
+      "label": "MongoClient connection pool",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "MONGODB_URI environment lookup, pool of 10 and six-second selection timeout. No URI is displayed.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 34,
+          "symbol": "maxPoolSize: 10"
+        }
+      ],
+      "id": "architecture-database-n1"
+    },
+    {
+      "label": "Database configured?",
+      "category": "Backend",
+      "kind": "IF / Switch",
+      "status": "Implemented",
+      "description": "Live services fail without MongoDB. A legacy local adapter exists after an unconditional early rejection and is not a working fallback.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 31,
+          "symbol": "MongoDB is not configured"
+        }
+      ],
+      "id": "architecture-database-n2"
+    },
+    {
+      "label": "ovia database / override",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Configured DB name or ovia default; deployed Atlas topology is Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 45,
+          "symbol": "process.env.MONGODB_DB"
+        }
+      ],
+      "id": "architecture-database-n3"
+    },
+    {
+      "label": "Collections and indexes",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "setupDatabase defines identity, email uniqueness, token TTL and checkout idempotency indexes.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 239,
+          "symbol": "export async function setupDatabase"
+        }
+      ],
+      "id": "architecture-database-n4"
+    },
+    {
+      "label": "Persisted result",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Repository reads and transactional writes return stored records.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 100,
+          "symbol": "export async function readRepository"
+        }
+      ],
+      "id": "architecture-database-n5"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-database-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-database-failure-end"
+    },
+    {
+      "label": "account_notifications",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 7 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 17,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 29,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 31,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/account-activity.ts",
+          "line": 12,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-activity.ts",
+          "line": 13,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 261,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 256,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-account_notifications"
+    },
+    {
+      "label": "addresses",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 9 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 19,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 29,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 32,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 44,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 48,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 59,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/addresses/[[...id]]/route.ts",
+          "line": 62,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 318,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 254,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-addresses"
+    },
+    {
+      "label": "audit",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 13 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/support/route.ts",
+          "line": 196,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 329,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 481,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 246,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1798,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 279,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 563,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 142,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 309,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 410,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 466,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 217,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-audit"
+    },
+    {
+      "label": "bulk_orders",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 3 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/bulk-orders/route.ts",
+          "line": 142,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/bulk-orders/route.ts",
+          "line": 194,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/bulk-orders/route.ts",
+          "line": 196,
+          "symbol": "find"
+        }
+      ],
+      "id": "db-bulk_orders"
+    },
+    {
+      "label": "campaignEvents",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 3 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 20,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 50,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-campaignEvents"
+    },
+    {
+      "label": "campaigns",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 4 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 11,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 45,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 178,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-campaigns"
+    },
+    {
+      "label": "carts",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 18 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 7,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 9,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 20,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/account-sign-in.ts",
+          "line": 21,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1491,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 53,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 64,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 79,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 95,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 141,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 150,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 193,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 242,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 254,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 214,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 216,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 304,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 245,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-carts"
+    },
+    {
+      "label": "categories",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 5 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/product-taxonomy/route.ts",
+          "line": 14,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1040,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1114,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1151,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1180,
+          "symbol": "collection"
+        }
+      ],
+      "id": "db-categories"
+    },
+    {
+      "label": "checkoutPromos",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 3 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 132,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 262,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 253,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-checkoutPromos"
+    },
+    {
+      "label": "checkoutSessions",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 15 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 136,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 191,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 312,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 313,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 39,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 189,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 194,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 233,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 238,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 360,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 364,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 291,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 305,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 310,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 252,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-checkoutSessions"
+    },
+    {
+      "label": "contact",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 4 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 450,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1755,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 75,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-contact"
+    },
+    {
+      "label": "coupons",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 18 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1546,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1553,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1559,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1614,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1618,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1621,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1661,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1664,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1665,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1668,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1671,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1690,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1695,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1726,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1729,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1735,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 115,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 127,
+          "symbol": "find"
+        }
+      ],
+      "id": "db-coupons"
+    },
+    {
+      "label": "events",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 20 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/content/blog-events/route.ts",
+          "line": 127,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/content/blog-events/route.ts",
+          "line": 195,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/content/blog-events/route.ts",
+          "line": 330,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/content/blog-events/route.ts",
+          "line": 336,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/content/blog-events/route.ts",
+          "line": 470,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 26,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 103,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 138,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 186,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 221,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/events/route.ts",
+          "line": 223,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 316,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 332,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 228,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 264,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/events-db.ts",
+          "line": 7,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 209,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 378,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 406,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 249,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-events"
+    },
+    {
+      "label": "integrations",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 6 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 53,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 67,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 68,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 106,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 786,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 787,
+          "symbol": "put"
+        }
+      ],
+      "id": "db-integrations"
+    },
+    {
+      "label": "inventory",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 17 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/orders/[id]/return/route.ts",
+          "line": 77,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1206,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1228,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1233,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/ai-copilot.ts",
+          "line": 65,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 107,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 163,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 304,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 306,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 186,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 530,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 539,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 177,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 182,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 344,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 349,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 247,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-inventory"
+    },
+    {
+      "label": "inventoryMovements",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 2 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1206,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1236,
+          "symbol": "put"
+        }
+      ],
+      "id": "db-inventoryMovements"
+    },
+    {
+      "label": "limits",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 5 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 114,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/http.ts",
+          "line": 122,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 39,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 44,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 248,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-limits"
+    },
+    {
+      "label": "newsletter_subscribers",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 1 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/newsletter/route.ts",
+          "line": 22,
+          "symbol": "put"
+        }
+      ],
+      "id": "db-newsletter_subscribers"
+    },
+    {
+      "label": "notification_logs",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 6 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/notification-service.ts",
+          "line": 751,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/notification-service.ts",
+          "line": 757,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/notification-service.ts",
+          "line": 771,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/notification-service.ts",
+          "line": 778,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/notification-service.ts",
+          "line": 794,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/notification-service.ts",
+          "line": 802,
+          "symbol": "find"
+        }
+      ],
+      "id": "db-notification_logs"
+    },
+    {
+      "label": "order_return_requests",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 3 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/orders/[id]/return-request/route.ts",
+          "line": 17,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/return-request/route.ts",
+          "line": 19,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/route.ts",
+          "line": 33,
+          "symbol": "get"
+        }
+      ],
+      "id": "db-order_return_requests"
+    },
+    {
+      "label": "orders",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 112 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/orders/[id]/document/route.ts",
+          "line": 16,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/email/route.ts",
+          "line": 14,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/return-request/route.ts",
+          "line": 15,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/route.ts",
+          "line": 27,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/shipping-label/route.ts",
+          "line": 16,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/orders/[id]/tracking/route.ts",
+          "line": 22,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/shipping/route.ts",
+          "line": 30,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/app/api/orders/[orderId]/tracking/route.ts",
+          "line": 20,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 14,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 311,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/orders/[id]/return/route.ts",
+          "line": 42,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 73,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 178,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 183,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 62,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 63,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 64,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 84,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 86,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 90,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 116,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 118,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 122,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 194,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 206,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 487,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 489,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 493,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 516,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 518,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 522,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 543,
+          "symbol": "put"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 78,
+          "symbol": "get"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 89,
+          "symbol": "get"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 103,
+          "symbol": "put"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 161,
+          "symbol": "get"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 193,
+          "symbol": "find"
+        },
+        {
+          "file": "src/lib/shipping/service.ts",
+          "line": 206,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 302,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 425,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1400,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1433,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1813,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/ai-copilot.ts",
+          "line": 72,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/campaigns.ts",
+          "line": 61,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 156,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 179,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 197,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 128,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 138,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 184,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 206,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 208,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 219,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 240,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 299,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/commerce.ts",
+          "line": 311,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/customer-order.ts",
+          "line": 8,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 263,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 264,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 271,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 72,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 82,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 98,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 116,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 172,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 219,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 278,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 526,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/logistics.ts",
+          "line": 561,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 551,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 18,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 97,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 105,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 148,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 152,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 167,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 188,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 208,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 282,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 298,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 334,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 359,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/paypal-checkout.ts",
+          "line": 389,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 144,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 199,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 202,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 214,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 223,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 295,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 347,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 356,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 369,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 380,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 435,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 111,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 141,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 155,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 206,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 234,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 244,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 302,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 327,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 368,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 406,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 444,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 462,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 508,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 522,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 567,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/razorpay-refunds.ts",
+          "line": 606,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 246,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-orders"
+    },
+    {
+      "label": "outbox",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 30 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/shipping/route.ts",
+          "line": 63,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/app/api/v1/bulk-orders/route.ts",
+          "line": 145,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/contact-notifications.ts",
+          "line": 28,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/contact-notifications.ts",
+          "line": 32,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/contact-notifications.ts",
+          "line": 54,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/contact-notifications.ts",
+          "line": 59,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/contact-notifications.ts",
+          "line": 61,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 42,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 86,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 254,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 264,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 273,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 309,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 323,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 348,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 365,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 370,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 390,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 431,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 445,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 471,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 487,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 512,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 535,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 540,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 165,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 219,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 428,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 526,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 251,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-outbox"
+    },
+    {
+      "label": "privacyRequests",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 8 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 58,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 176,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 280,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 298,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 315,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 431,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 436,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-privacyRequests"
+    },
+    {
+      "label": "products",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 20 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/product-taxonomy/route.ts",
+          "line": 30,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 598,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 784,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 791,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 822,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 957,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 964,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 997,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1001,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1006,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1042,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1224,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1235,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/ai-copilot.ts",
+          "line": 43,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 93,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 185,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 265,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 266,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 267,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 242,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-products"
+    },
+    {
+      "label": "returns",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 2 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1401,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1437,
+          "symbol": "put"
+        }
+      ],
+      "id": "db-returns"
+    },
+    {
+      "label": "reviews",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 9 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 63,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 112,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 144,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 215,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 245,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 261,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 290,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/reviews/route.ts",
+          "line": 295,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 61,
+          "symbol": "collection"
+        }
+      ],
+      "id": "db-reviews"
+    },
+    {
+      "label": "sessions",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 24 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/security/route.ts",
+          "line": 17,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/security/route.ts",
+          "line": 25,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/security/route.ts",
+          "line": 25,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 77,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 97,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 120,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 127,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 366,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 368,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 377,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 382,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 402,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 405,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 46,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 93,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 164,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 288,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/auth.ts",
+          "line": 89,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/auth.ts",
+          "line": 122,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/auth.ts",
+          "line": 165,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 94,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 97,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 402,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 244,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-sessions"
+    },
+    {
+      "label": "settings",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 4 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1818,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1867,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1868,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 91,
+          "symbol": "get"
+        }
+      ],
+      "id": "db-settings"
+    },
+    {
+      "label": "site_content",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 4 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/content/route.ts",
+          "line": 230,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/app/api/admin/content/route.ts",
+          "line": 233,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/content/route.ts",
+          "line": 270,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/app/api/admin/content/route.ts",
+          "line": 277,
+          "symbol": "put"
+        }
+      ],
+      "id": "db-site_content"
+    },
+    {
+      "label": "stories",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 16 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 11,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 16,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 16,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 21,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 21,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 46,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/articles/route.ts",
+          "line": 46,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/whats-new/page.tsx",
+          "line": 31,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 269,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 98,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 528,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/stories.ts",
+          "line": 309,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/stories.ts",
+          "line": 422,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/stories.ts",
+          "line": 467,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/stories.ts",
+          "line": 510,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-stories"
+    },
+    {
+      "label": "support_attachments",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 6 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/support/attachments/[id]/route.ts",
+          "line": 18,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-attachments.ts",
+          "line": 64,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-attachments.ts",
+          "line": 80,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-attachments.ts",
+          "line": 95,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-attachments.ts",
+          "line": 133,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_attachments"
+    },
+    {
+      "label": "support_connections",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 5 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/support/gmail/callback/route.ts",
+          "line": 58,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/support/gmail/route.ts",
+          "line": 39,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/support-gmail.ts",
+          "line": 274,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-google-auth.ts",
+          "line": 56,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_connections"
+    },
+    {
+      "label": "support_conversations",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 17 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 453,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 457,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 470,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 474,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 210,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 101,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 105,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 130,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 166,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 216,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 97,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 182,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 204,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 330,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 334,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 394,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_conversations"
+    },
+    {
+      "label": "support_drafts",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 4 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 283,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 449,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 521,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_drafts"
+    },
+    {
+      "label": "support_email_receipts",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 7 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-gmail.ts",
+          "line": 153,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-gmail.ts",
+          "line": 258,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 274,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 284,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 371,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 403,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_email_receipts"
+    },
+    {
+      "label": "support_forwards",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 3 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 442,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 545,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_forwards"
+    },
+    {
+      "label": "support_labels",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 3 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 343,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 352,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 524,
+          "symbol": "find"
+        }
+      ],
+      "id": "db-support_labels"
+    },
+    {
+      "label": "support_mailbox",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 8 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 363,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 365,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 152,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 181,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 374,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 377,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 520,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_mailbox"
+    },
+    {
+      "label": "support_messages",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 7 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 231,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 54,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 74,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 89,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 127,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 666,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_messages"
+    },
+    {
+      "label": "support_notes",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 5 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 198,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 208,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 538,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 669,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 255,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_notes"
+    },
+    {
+      "label": "support_scheduled",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 6 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 305,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 310,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 313,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 455,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 491,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 522,
+          "symbol": "find"
+        }
+      ],
+      "id": "db-support_scheduled"
+    },
+    {
+      "label": "support_sent",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 4 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 403,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 417,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 537,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_sent"
+    },
+    {
+      "label": "support_settings",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 2 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 367,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 525,
+          "symbol": "find"
+        }
+      ],
+      "id": "db-support_settings"
+    },
+    {
+      "label": "support_templates",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 3 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 323,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 334,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-mailbox.ts",
+          "line": 523,
+          "symbol": "find"
+        }
+      ],
+      "id": "db-support_templates"
+    },
+    {
+      "label": "support_tickets",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 7 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/support/route.ts",
+          "line": 75,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/support/route.ts",
+          "line": 79,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/support/route.ts",
+          "line": 178,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 76,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 282,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 393,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-support_tickets"
+    },
+    {
+      "label": "tickets",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 18 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/account/activity/route.ts",
+          "line": 14,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 46,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 51,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 171,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 226,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 249,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 312,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 451,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 479,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1399,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1431,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1438,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 142,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 162,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/care-order-requests.ts",
+          "line": 209,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 77,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/support-inbox.ts",
+          "line": 138,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 257,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-tickets"
+    },
+    {
+      "label": "tokens",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 29 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 270,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 29,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 33,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 34,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 67,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 103,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 64,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 70,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 73,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 102,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 115,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 124,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 129,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 134,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 135,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 145,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 150,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 161,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 166,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 167,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 151,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 206,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 217,
+          "symbol": "remove"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 359,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 363,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 381,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 389,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 396,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 250,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-tokens"
+    },
+    {
+      "label": "users",
+      "category": "Database",
+      "kind": "Database Query",
+      "status": "Implemented",
+      "description": "Actual collection name used by source. Evidence: 53 literal references. Production contents are Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/admin/customers/route.ts",
+          "line": 59,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/customers/route.ts",
+          "line": 84,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 30,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 32,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 93,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 119,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 121,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/admin/customers/[id]/route.ts",
+          "line": 129,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/account/payment-preference/route.ts",
+          "line": 16,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/payment-preference/route.ts",
+          "line": 32,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/account/payment-preference/route.ts",
+          "line": 34,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 65,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 167,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 277,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 308,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 399,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/care/[[...path]]/route.ts",
+          "line": 423,
+          "symbol": "get"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 248,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 268,
+          "symbol": "put"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 274,
+          "symbol": "find"
+        },
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 280,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/account-profile.ts",
+          "line": 142,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-profile.ts",
+          "line": 151,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-profile.ts",
+          "line": 180,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/account-wishlist.ts",
+          "line": 19,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-wishlist.ts",
+          "line": 41,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/account-wishlist.ts",
+          "line": 51,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 55,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 95,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 173,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-auth.ts",
+          "line": 262,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 57,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1264,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1293,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1295,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/admin-service.ts",
+          "line": 1499,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/auth.ts",
+          "line": 133,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 141,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/checkout-pricing.ts",
+          "line": 324,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 268,
+          "symbol": "collection"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 77,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 81,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/mail.ts",
+          "line": 99,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 57,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 59,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 143,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/recovery.ts",
+          "line": 160,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 405,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 420,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 425,
+          "symbol": "find"
+        },
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 455,
+          "symbol": "put"
+        },
+        {
+          "file": "src/server/support-conversations.ts",
+          "line": 182,
+          "symbol": "get"
+        },
+        {
+          "file": "src/server/db.ts",
+          "line": 243,
+          "symbol": "createIndex(id unique)"
+        }
+      ],
+      "id": "db-users"
+    }
+  ],
+  "edges": [
+    {
+      "id": "architecture-database-e0",
+      "source": "architecture-database-n0",
+      "target": "architecture-database-n1"
+    },
+    {
+      "id": "architecture-database-e1",
+      "source": "architecture-database-n1",
+      "target": "architecture-database-n2"
+    },
+    {
+      "id": "architecture-database-e2",
+      "source": "architecture-database-n2",
+      "target": "architecture-database-n3",
+      "label": "Yes / accepted"
+    },
+    {
+      "id": "architecture-database-e3",
+      "source": "architecture-database-n3",
+      "target": "architecture-database-n4"
+    },
+    {
+      "id": "architecture-database-e4",
+      "source": "architecture-database-n4",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "architecture-database-fail-architecture-database-n2",
+      "source": "architecture-database-n2",
+      "target": "architecture-database-error",
+      "label": "No / rejected",
+      "failure": true
+    },
+    {
+      "id": "architecture-database-fail-end",
+      "source": "architecture-database-error",
+      "target": "architecture-database-failure-end",
+      "failure": true
+    },
+    {
+      "id": "db-collection-0",
+      "source": "architecture-database-n4",
+      "target": "db-account_notifications",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-0",
+      "source": "db-account_notifications",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-1",
+      "source": "architecture-database-n4",
+      "target": "db-addresses",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-1",
+      "source": "db-addresses",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-2",
+      "source": "architecture-database-n4",
+      "target": "db-audit",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-2",
+      "source": "db-audit",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-3",
+      "source": "architecture-database-n4",
+      "target": "db-bulk_orders",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-3",
+      "source": "db-bulk_orders",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-4",
+      "source": "architecture-database-n4",
+      "target": "db-campaignEvents",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-4",
+      "source": "db-campaignEvents",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-5",
+      "source": "architecture-database-n4",
+      "target": "db-campaigns",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-5",
+      "source": "db-campaigns",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-6",
+      "source": "architecture-database-n4",
+      "target": "db-carts",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-6",
+      "source": "db-carts",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-7",
+      "source": "architecture-database-n4",
+      "target": "db-categories",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-7",
+      "source": "db-categories",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-8",
+      "source": "architecture-database-n4",
+      "target": "db-checkoutPromos",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-8",
+      "source": "db-checkoutPromos",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-9",
+      "source": "architecture-database-n4",
+      "target": "db-checkoutSessions",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-9",
+      "source": "db-checkoutSessions",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-10",
+      "source": "architecture-database-n4",
+      "target": "db-contact",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-10",
+      "source": "db-contact",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-11",
+      "source": "architecture-database-n4",
+      "target": "db-coupons",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-11",
+      "source": "db-coupons",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-12",
+      "source": "architecture-database-n4",
+      "target": "db-events",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-12",
+      "source": "db-events",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-13",
+      "source": "architecture-database-n4",
+      "target": "db-integrations",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-13",
+      "source": "db-integrations",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-14",
+      "source": "architecture-database-n4",
+      "target": "db-inventory",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-14",
+      "source": "db-inventory",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-15",
+      "source": "architecture-database-n4",
+      "target": "db-inventoryMovements",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-15",
+      "source": "db-inventoryMovements",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-16",
+      "source": "architecture-database-n4",
+      "target": "db-limits",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-16",
+      "source": "db-limits",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-17",
+      "source": "architecture-database-n4",
+      "target": "db-newsletter_subscribers",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-17",
+      "source": "db-newsletter_subscribers",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-18",
+      "source": "architecture-database-n4",
+      "target": "db-notification_logs",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-18",
+      "source": "db-notification_logs",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-19",
+      "source": "architecture-database-n4",
+      "target": "db-order_return_requests",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-19",
+      "source": "db-order_return_requests",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-20",
+      "source": "architecture-database-n4",
+      "target": "db-orders",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-20",
+      "source": "db-orders",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-21",
+      "source": "architecture-database-n4",
+      "target": "db-outbox",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-21",
+      "source": "db-outbox",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-22",
+      "source": "architecture-database-n4",
+      "target": "db-privacyRequests",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-22",
+      "source": "db-privacyRequests",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-23",
+      "source": "architecture-database-n4",
+      "target": "db-products",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-23",
+      "source": "db-products",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-24",
+      "source": "architecture-database-n4",
+      "target": "db-returns",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-24",
+      "source": "db-returns",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-25",
+      "source": "architecture-database-n4",
+      "target": "db-reviews",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-25",
+      "source": "db-reviews",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-26",
+      "source": "architecture-database-n4",
+      "target": "db-sessions",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-26",
+      "source": "db-sessions",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-27",
+      "source": "architecture-database-n4",
+      "target": "db-settings",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-27",
+      "source": "db-settings",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-28",
+      "source": "architecture-database-n4",
+      "target": "db-site_content",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-28",
+      "source": "db-site_content",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-29",
+      "source": "architecture-database-n4",
+      "target": "db-stories",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-29",
+      "source": "db-stories",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-30",
+      "source": "architecture-database-n4",
+      "target": "db-support_attachments",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-30",
+      "source": "db-support_attachments",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-31",
+      "source": "architecture-database-n4",
+      "target": "db-support_connections",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-31",
+      "source": "db-support_connections",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-32",
+      "source": "architecture-database-n4",
+      "target": "db-support_conversations",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-32",
+      "source": "db-support_conversations",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-33",
+      "source": "architecture-database-n4",
+      "target": "db-support_drafts",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-33",
+      "source": "db-support_drafts",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-34",
+      "source": "architecture-database-n4",
+      "target": "db-support_email_receipts",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-34",
+      "source": "db-support_email_receipts",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-35",
+      "source": "architecture-database-n4",
+      "target": "db-support_forwards",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-35",
+      "source": "db-support_forwards",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-36",
+      "source": "architecture-database-n4",
+      "target": "db-support_labels",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-36",
+      "source": "db-support_labels",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-37",
+      "source": "architecture-database-n4",
+      "target": "db-support_mailbox",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-37",
+      "source": "db-support_mailbox",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-38",
+      "source": "architecture-database-n4",
+      "target": "db-support_messages",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-38",
+      "source": "db-support_messages",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-39",
+      "source": "architecture-database-n4",
+      "target": "db-support_notes",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-39",
+      "source": "db-support_notes",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-40",
+      "source": "architecture-database-n4",
+      "target": "db-support_scheduled",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-40",
+      "source": "db-support_scheduled",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-41",
+      "source": "architecture-database-n4",
+      "target": "db-support_sent",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-41",
+      "source": "db-support_sent",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-42",
+      "source": "architecture-database-n4",
+      "target": "db-support_settings",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-42",
+      "source": "db-support_settings",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-43",
+      "source": "architecture-database-n4",
+      "target": "db-support_templates",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-43",
+      "source": "db-support_templates",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-44",
+      "source": "architecture-database-n4",
+      "target": "db-support_tickets",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-44",
+      "source": "db-support_tickets",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-45",
+      "source": "architecture-database-n4",
+      "target": "db-tickets",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-45",
+      "source": "db-tickets",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-46",
+      "source": "architecture-database-n4",
+      "target": "db-tokens",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-46",
+      "source": "db-tokens",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-collection-47",
+      "source": "architecture-database-n4",
+      "target": "db-users",
+      "label": "Collection access"
+    },
+    {
+      "id": "db-result-47",
+      "source": "db-users",
+      "target": "architecture-database-n5"
+    },
+    {
+      "id": "db-rel-0",
+      "source": "db-sessions",
+      "target": "db-users",
+      "label": "userId -> users.id"
+    },
+    {
+      "id": "db-rel-1",
+      "source": "db-addresses",
+      "target": "db-users",
+      "label": "userId -> users.id"
+    },
+    {
+      "id": "db-rel-2",
+      "source": "db-orders",
+      "target": "db-users",
+      "label": "userId / owner -> user identity"
+    },
+    {
+      "id": "db-rel-3",
+      "source": "db-checkoutSessions",
+      "target": "db-orders",
+      "label": "orderId -> orders.id"
+    },
+    {
+      "id": "db-rel-4",
+      "source": "db-inventory",
+      "target": "db-products",
+      "label": "id -> variants[].sku"
+    },
+    {
+      "id": "db-rel-5",
+      "source": "db-carts",
+      "target": "db-products",
+      "label": "lines[].sku -> variants[].sku"
+    },
+    {
+      "id": "db-rel-6",
+      "source": "db-reviews",
+      "target": "db-users",
+      "label": "userId -> users.id"
+    },
+    {
+      "id": "db-rel-7",
+      "source": "db-reviews",
+      "target": "db-orders",
+      "label": "optional orderId -> orders.id"
+    },
+    {
+      "id": "db-rel-8",
+      "source": "db-tickets",
+      "target": "db-orders",
+      "label": "orderId -> orders.id"
+    },
+    {
+      "id": "db-rel-9",
+      "source": "db-returns",
+      "target": "db-tickets",
+      "label": "ticketId -> tickets.id"
+    },
+    {
+      "id": "db-rel-10",
+      "source": "db-returns",
+      "target": "db-orders",
+      "label": "orderRawId -> orders.id"
+    },
+    {
+      "id": "db-rel-11",
+      "source": "db-orders",
+      "target": "db-campaigns",
+      "label": "campaignId -> campaigns.id"
+    },
+    {
+      "id": "db-rel-12",
+      "source": "db-campaignEvents",
+      "target": "db-campaigns",
+      "label": "campaignId -> campaign identity"
+    },
+    {
+      "id": "db-rel-13",
+      "source": "db-support_messages",
+      "target": "db-support_conversations",
+      "label": "ticketId -> conversation ID"
+    },
+    {
+      "id": "db-rel-14",
+      "source": "db-account_notifications",
+      "target": "db-users",
+      "label": "userId -> users.id"
+    },
+    {
+      "id": "db-rel-15",
+      "source": "db-inventoryMovements",
+      "target": "db-inventory",
+      "label": "sku -> inventory.id"
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "48 literal collection names were found in queries or index definitions. A collection name in code does not prove that the collection exists in production.",
+    "Payments, refunds and shipments are embedded in orders. Wishlist is embedded in users. Categories are matched by catalog fields; no category foreign key is declared.",
+    "No Mongoose schemas were found; data models are TypeScript types plus runtime route validation."
+  ]
+}
