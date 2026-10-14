@@ -1,0 +1,415 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "architecture-frontend",
+  "title": "Frontend architecture",
+  "subtitle": "Pages, interactions, frontend components and their API boundaries",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Home and navigation",
+      "category": "Frontend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Homepage and shared header / navigation.",
+      "evidence": [
+        {
+          "file": "src/app/page.tsx",
+          "line": 1
+        }
+      ],
+      "id": "architecture-frontend-n0"
+    },
+    {
+      "label": "Bags / luggage catalog",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Catchall storefront resolves bags, luggage, categories and collection routes.",
+      "evidence": [
+        {
+          "file": "src/app/[...segments]/page.tsx",
+          "line": 207,
+          "symbol": "path === \"bags\""
+        }
+      ],
+      "id": "architecture-frontend-n1"
+    },
+    {
+      "label": "Listings and product details",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Catalog facets and /products/[slug] detail.",
+      "evidence": [
+        {
+          "file": "src/components/catalog-view.tsx",
+          "line": 1
+        }
+      ],
+      "id": "architecture-frontend-n2"
+    },
+    {
+      "label": "Cart and checkout",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Store provider and cart page send server cart / checkout requests.",
+      "evidence": [
+        {
+          "file": "src/components/store-provider.tsx",
+          "line": 1
+        }
+      ],
+      "id": "architecture-frontend-n3"
+    },
+    {
+      "label": "Storefront API requests",
+      "category": "API",
+      "kind": "HTTP Request",
+      "status": "Implemented",
+      "description": "Actual client/server routes documented in the route inventory.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 42,
+          "symbol": "export async function GET"
+        }
+      ],
+      "endpoint": "/api/products | /api/search | /api/v1/*",
+      "id": "architecture-frontend-n4"
+    },
+    {
+      "label": "Server processing",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Services return current catalog, bag, quote and order data.",
+      "evidence": [
+        {
+          "file": "src/server/commerce.ts",
+          "line": 50,
+          "symbol": "export async function readCart"
+        }
+      ],
+      "id": "architecture-frontend-n5"
+    },
+    {
+      "label": "Render confirmed result",
+      "category": "Frontend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "State updates follow API results, with loading and error UI.",
+      "evidence": [
+        {
+          "file": "src/components/store-provider.tsx",
+          "line": 1
+        }
+      ],
+      "id": "architecture-frontend-n6"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-frontend-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-frontend-failure-end"
+    },
+    {
+      "label": "Registration / OTP",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Customer account section backed by actual account, care, order or review APIs. Address book is a separate component.",
+      "evidence": [
+        {
+          "file": "src/components/auth-experience.tsx",
+          "line": 1
+        }
+      ],
+      "id": "frontend-account-0"
+    },
+    {
+      "label": "Google / Apple sign-in",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Customer account section backed by actual account, care, order or review APIs. Address book is a separate component.",
+      "evidence": [
+        {
+          "file": "src/components/social-sign-in-buttons.tsx",
+          "line": 1
+        }
+      ],
+      "id": "frontend-account-1"
+    },
+    {
+      "label": "Account dashboard",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Customer account section backed by actual account, care, order or review APIs. Address book is a separate component.",
+      "evidence": [
+        {
+          "file": "src/components/account-dashboard.tsx",
+          "line": 1
+        }
+      ],
+      "id": "frontend-account-2"
+    },
+    {
+      "label": "Profile and addresses",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Customer account section backed by actual account, care, order or review APIs. Address book is a separate component.",
+      "evidence": [
+        {
+          "file": "src/components/customer-profile.tsx",
+          "line": 1
+        }
+      ],
+      "id": "frontend-account-3"
+    },
+    {
+      "label": "Orders and tracking",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Customer account section backed by actual account, care, order or review APIs. Address book is a separate component.",
+      "evidence": [
+        {
+          "file": "src/components/account-orders-portal.tsx",
+          "line": 1
+        }
+      ],
+      "id": "frontend-account-4"
+    },
+    {
+      "label": "Cancellation / returns",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Customer account section backed by actual account, care, order or review APIs. Address book is a separate component.",
+      "evidence": [
+        {
+          "file": "src/components/account-orders-returns.tsx",
+          "line": 1
+        }
+      ],
+      "id": "frontend-account-5"
+    },
+    {
+      "label": "Refund / notifications",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Customer account section backed by actual account, care, order or review APIs. Address book is a separate component.",
+      "evidence": [
+        {
+          "file": "src/components/account-activity-feed.tsx",
+          "line": 1
+        }
+      ],
+      "id": "frontend-account-6"
+    },
+    {
+      "label": "Product reviews",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Customer account section backed by actual account, care, order or review APIs. Address book is a separate component.",
+      "evidence": [
+        {
+          "file": "src/components/account-reviews.tsx",
+          "line": 1
+        }
+      ],
+      "id": "frontend-account-7"
+    },
+    {
+      "label": "Customer support",
+      "category": "Frontend",
+      "kind": "Frontend Action",
+      "status": "Implemented",
+      "description": "Customer account section backed by actual account, care, order or review APIs. Address book is a separate component.",
+      "evidence": [
+        {
+          "file": "src/components/account-support.tsx",
+          "line": 1
+        }
+      ],
+      "id": "frontend-account-8"
+    }
+  ],
+  "edges": [
+    {
+      "id": "architecture-frontend-e0",
+      "source": "architecture-frontend-n0",
+      "target": "architecture-frontend-n1"
+    },
+    {
+      "id": "architecture-frontend-e1",
+      "source": "architecture-frontend-n1",
+      "target": "architecture-frontend-n2"
+    },
+    {
+      "id": "architecture-frontend-e2",
+      "source": "architecture-frontend-n2",
+      "target": "architecture-frontend-n3"
+    },
+    {
+      "id": "architecture-frontend-e3",
+      "source": "architecture-frontend-n3",
+      "target": "architecture-frontend-n4"
+    },
+    {
+      "id": "architecture-frontend-e4",
+      "source": "architecture-frontend-n4",
+      "target": "architecture-frontend-n5"
+    },
+    {
+      "id": "architecture-frontend-e5",
+      "source": "architecture-frontend-n5",
+      "target": "architecture-frontend-n6"
+    },
+    {
+      "id": "architecture-frontend-fail-architecture-frontend-n4",
+      "source": "architecture-frontend-n4",
+      "target": "architecture-frontend-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "architecture-frontend-fail-end",
+      "source": "architecture-frontend-error",
+      "target": "architecture-frontend-failure-end",
+      "failure": true
+    },
+    {
+      "id": "frontend-account-start-0",
+      "source": "architecture-frontend-n0",
+      "target": "frontend-account-0",
+      "label": "Account"
+    },
+    {
+      "id": "frontend-account-api-0",
+      "source": "frontend-account-0",
+      "target": "architecture-frontend-n4"
+    },
+    {
+      "id": "frontend-account-start-1",
+      "source": "architecture-frontend-n0",
+      "target": "frontend-account-1",
+      "label": "Account"
+    },
+    {
+      "id": "frontend-account-api-1",
+      "source": "frontend-account-1",
+      "target": "architecture-frontend-n4"
+    },
+    {
+      "id": "frontend-account-start-2",
+      "source": "architecture-frontend-n0",
+      "target": "frontend-account-2",
+      "label": "Account"
+    },
+    {
+      "id": "frontend-account-api-2",
+      "source": "frontend-account-2",
+      "target": "architecture-frontend-n4"
+    },
+    {
+      "id": "frontend-account-start-3",
+      "source": "architecture-frontend-n0",
+      "target": "frontend-account-3",
+      "label": "Account"
+    },
+    {
+      "id": "frontend-account-api-3",
+      "source": "frontend-account-3",
+      "target": "architecture-frontend-n4"
+    },
+    {
+      "id": "frontend-account-start-4",
+      "source": "architecture-frontend-n0",
+      "target": "frontend-account-4",
+      "label": "Account"
+    },
+    {
+      "id": "frontend-account-api-4",
+      "source": "frontend-account-4",
+      "target": "architecture-frontend-n4"
+    },
+    {
+      "id": "frontend-account-start-5",
+      "source": "architecture-frontend-n0",
+      "target": "frontend-account-5",
+      "label": "Account"
+    },
+    {
+      "id": "frontend-account-api-5",
+      "source": "frontend-account-5",
+      "target": "architecture-frontend-n4"
+    },
+    {
+      "id": "frontend-account-start-6",
+      "source": "architecture-frontend-n0",
+      "target": "frontend-account-6",
+      "label": "Account"
+    },
+    {
+      "id": "frontend-account-api-6",
+      "source": "frontend-account-6",
+      "target": "architecture-frontend-n4"
+    },
+    {
+      "id": "frontend-account-start-7",
+      "source": "architecture-frontend-n0",
+      "target": "frontend-account-7",
+      "label": "Account"
+    },
+    {
+      "id": "frontend-account-api-7",
+      "source": "frontend-account-7",
+      "target": "architecture-frontend-n4"
+    },
+    {
+      "id": "frontend-account-start-8",
+      "source": "architecture-frontend-n0",
+      "target": "frontend-account-8",
+      "label": "Account"
+    },
+    {
+      "id": "frontend-account-api-8",
+      "source": "frontend-account-8",
+      "target": "architecture-frontend-n4"
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified."
+  ]
+}

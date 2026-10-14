@@ -1,0 +1,766 @@
+{
+  "schemaVersion": 1,
+  "semantics": "Documentation graphs, not executable n8n workflows. Edges are process/data-flow compositions supported by references; planned edges are proposals.",
+  "id": "architecture-integrations",
+  "title": "External integrations",
+  "subtitle": "Actual provider adapters, communication paths and runtime uncertainty",
+  "group": "Architecture",
+  "nodes": [
+    {
+      "label": "Backend integration request",
+      "category": "Backend",
+      "kind": "Trigger",
+      "status": "Implemented",
+      "description": "Service code selects a provider for the requested task.",
+      "evidence": [
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 88,
+          "symbol": "export async function getAdminIntegrationsList"
+        }
+      ],
+      "id": "architecture-integrations-n0"
+    },
+    {
+      "label": "Provider configuration boundary",
+      "category": "Backend",
+      "kind": "Backend Service",
+      "status": "Implemented",
+      "description": "Read environment and stored integration settings; no credential values appear in the editor.",
+      "evidence": [
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 50,
+          "symbol": "export async function getStoredIntegrationSettings"
+        }
+      ],
+      "id": "architecture-integrations-n1"
+    },
+    {
+      "label": "Provider result / error",
+      "category": "Backend",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Caller receives provider-confirmed data or a route-specific service error.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-integrations-n2"
+    },
+    {
+      "label": "Request failed",
+      "category": "Errors",
+      "kind": "Error Handler",
+      "status": "Implemented",
+      "description": "Validation, access, conflict or service errors are returned to the caller. Status and error shape depend on the specific route.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-integrations-error"
+    },
+    {
+      "label": "Show error / retry",
+      "category": "Errors",
+      "kind": "Response",
+      "status": "Implemented",
+      "description": "Failure end state. Caller receives the actual error; a retry may be offered by the UI.",
+      "evidence": [
+        {
+          "file": "src/server/http.ts",
+          "line": 69,
+          "symbol": "export function api"
+        }
+      ],
+      "id": "architecture-integrations-failure-end"
+    },
+    {
+      "label": "MongoDB / Atlas",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Native driver and transactional repository. Hosting on Atlas, cluster layout and live connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/db.ts",
+          "line": 30,
+          "symbol": "export async function mongo"
+        }
+      ],
+      "id": "integration-0"
+    },
+    {
+      "label": "Razorpay",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Orders, captured payments, signed webhooks and refunds. Credentials, enabled webhook events and merchant connectivity are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/razorpay-checkout.ts",
+          "line": 322,
+          "symbol": "export async function beginRazorpayCheckout"
+        }
+      ],
+      "id": "integration-1"
+    },
+    {
+      "label": "PayPal",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Sandbox orders, approval, capture and verified webhook. Sandbox endpoint is explicit. Live PayPal settlement and automatic PayPal refunds are Planned.",
+      "evidence": [
+        {
+          "file": "src/server/paypal.ts",
+          "line": 3,
+          "symbol": "const base"
+        }
+      ],
+      "id": "integration-2"
+    },
+    {
+      "label": "Delhivery",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Serviceability, shipment, pickup, cancellation and tracking. Courier configuration and live operational readiness are Unverified.",
+      "evidence": [
+        {
+          "file": "src/lib/shipping/delhivery.ts",
+          "line": 1
+        }
+      ],
+      "id": "integration-3"
+    },
+    {
+      "label": "Resend",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Outbound account, order, support and notification email. Sender domain, API configuration and delivered email are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/mail.ts",
+          "line": 193,
+          "symbol": "https://api.resend.com/emails"
+        }
+      ],
+      "id": "integration-4"
+    },
+    {
+      "label": "Google OAuth",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "State / PKCE and JWKS-verified identity. Enabled provider configuration is Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 261,
+          "symbol": "https://oauth2.googleapis.com/token"
+        }
+      ],
+      "id": "integration-5"
+    },
+    {
+      "label": "Apple OAuth",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Identity verification and client-secret signing. Apple keys, enabled provider and runtime readiness are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/social-auth.ts",
+          "line": 232,
+          "symbol": "export async function appleClientSecret"
+        }
+      ],
+      "id": "integration-6"
+    },
+    {
+      "label": "Algolia",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Search SDK and optional product index synchronization. Index freshness and configured keys are Unverified.",
+      "evidence": [
+        {
+          "file": "src/lib/algolia.ts",
+          "line": 42,
+          "symbol": "export async function searchAlgoliaProducts"
+        }
+      ],
+      "id": "integration-7"
+    },
+    {
+      "label": "Stripe",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Legacy test-mode checkout and signed webhook. Checkout is guarded to sk_test_ credentials; live checkout is not claimed.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/[[...path]]/route.ts",
+          "line": 413,
+          "symbol": "stripe.checkout.sessions.create"
+        }
+      ],
+      "id": "integration-8"
+    },
+    {
+      "label": "Gmail",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "OAuth mailbox connection and sync. Mailbox connection, grants and scheduler execution are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/support-gmail.ts",
+          "line": 1
+        }
+      ],
+      "id": "integration-9"
+    },
+    {
+      "label": "DeepL / Google Translate",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "HTTP translation provider selection. Provider selection depends on environment; active configuration is Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/translate/route.ts",
+          "line": 8,
+          "symbol": "export async function POST"
+        }
+      ],
+      "id": "integration-10"
+    },
+    {
+      "label": "DeepSeek AI",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Owner copilot with constrained provider endpoint. Provider connectivity and model response quality are Unverified.",
+      "evidence": [
+        {
+          "file": "src/server/ai-copilot.ts",
+          "line": 25,
+          "symbol": "export async function askCopilot"
+        }
+      ],
+      "id": "integration-11"
+    },
+    {
+      "label": "Support Socket.IO",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Separate realtime support transport. Local support process / deployment transport availability is Unverified.",
+      "evidence": [
+        {
+          "file": "src/components/use-support-realtime.ts",
+          "line": 1
+        }
+      ],
+      "id": "integration-12"
+    },
+    {
+      "label": "Delhivery Maps MCP",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "JSON-RPC tools/call for address, search and route tools. Active token and tool availability are Unverified. A hardcoded fallback token exists in source; its value is excluded from documentation.",
+      "evidence": [
+        {
+          "file": "src/lib/shipping/delhivery-maps.ts",
+          "line": 9,
+          "symbol": "async function callDelhiveryMapsTool"
+        }
+      ],
+      "id": "integration-13"
+    },
+    {
+      "label": "Cloudinary media URLs",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Validated public-ID image transformation URL helper. The helper creates CDN URLs. Admin uploads currently write to local public/media/uploads; Cloudinary upload API implementation is not claimed.",
+      "evidence": [
+        {
+          "file": "src/lib/media.ts",
+          "line": 2,
+          "symbol": "export function cloudinaryImage"
+        }
+      ],
+      "id": "integration-14"
+    },
+    {
+      "label": "Frankfurter exchange rates",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "INR display-rate HTTP fetch with cache. Rates are approximate display conversions; provider failure returns an empty rate list. Runtime availability is Unverified.",
+      "evidence": [
+        {
+          "file": "src/app/api/v1/rates/route.ts",
+          "line": 7,
+          "symbol": "export async function GET"
+        }
+      ],
+      "id": "integration-15"
+    },
+    {
+      "label": "OpenStreetMap tiles",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Leaflet browser tile requests for store maps. Public tile rendering is implemented; availability and usage at runtime are Unverified.",
+      "evidence": [
+        {
+          "file": "src/components/store-map.tsx",
+          "line": 20,
+          "symbol": "https://tile.openstreetmap.org"
+        }
+      ],
+      "id": "integration-16"
+    },
+    {
+      "label": "WhatsApp contact links",
+      "category": "External",
+      "kind": "External API",
+      "status": "Implemented",
+      "description": "Browser deep links to WhatsApp / wa.me. This contact UI opens WhatsApp. It does not prove a server-side automated message-sending API exists.",
+      "evidence": [
+        {
+          "file": "src/components/whatsapp-widget.tsx",
+          "line": 41,
+          "symbol": "whatsappMobileUrl"
+        }
+      ],
+      "id": "integration-17"
+    },
+    {
+      "label": "Meta Business health checks",
+      "category": "External",
+      "kind": "External API",
+      "status": "Unverified",
+      "description": "Stored settings and Graph API identity checks. Credential-check code exists for WhatsApp/Messenger. Automated message delivery and a verified Messenger webhook are not established by these checks.",
+      "evidence": [
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 662,
+          "symbol": "case \"whatsapp\""
+        }
+      ],
+      "id": "integration-18"
+    },
+    {
+      "label": "Google Analytics settings",
+      "category": "External",
+      "kind": "External API",
+      "status": "Unverified",
+      "description": "Measurement-ID storage and format check. Settings UI exists. No gtag/GA collection call was found in src; automatic GA4 event delivery is Planned, not proven by ID validation.",
+      "evidence": [
+        {
+          "file": "src/server/integrations-service.ts",
+          "line": 711,
+          "symbol": "case \"google_analytics\""
+        }
+      ],
+      "id": "integration-19"
+    }
+  ],
+  "edges": [
+    {
+      "id": "architecture-integrations-e0",
+      "source": "architecture-integrations-n0",
+      "target": "architecture-integrations-n1"
+    },
+    {
+      "id": "architecture-integrations-fail-architecture-integrations-n0",
+      "source": "architecture-integrations-n0",
+      "target": "architecture-integrations-error",
+      "label": "Failure",
+      "failure": true
+    },
+    {
+      "id": "architecture-integrations-fail-end",
+      "source": "architecture-integrations-error",
+      "target": "architecture-integrations-failure-end",
+      "failure": true
+    },
+    {
+      "id": "integration-in-0",
+      "source": "architecture-integrations-n1",
+      "target": "integration-0"
+    },
+    {
+      "id": "integration-out-0",
+      "source": "integration-0",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-0",
+      "source": "integration-0",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-1",
+      "source": "architecture-integrations-n1",
+      "target": "integration-1"
+    },
+    {
+      "id": "integration-out-1",
+      "source": "integration-1",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-1",
+      "source": "integration-1",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-2",
+      "source": "architecture-integrations-n1",
+      "target": "integration-2"
+    },
+    {
+      "id": "integration-out-2",
+      "source": "integration-2",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-2",
+      "source": "integration-2",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-3",
+      "source": "architecture-integrations-n1",
+      "target": "integration-3"
+    },
+    {
+      "id": "integration-out-3",
+      "source": "integration-3",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-3",
+      "source": "integration-3",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-4",
+      "source": "architecture-integrations-n1",
+      "target": "integration-4"
+    },
+    {
+      "id": "integration-out-4",
+      "source": "integration-4",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-4",
+      "source": "integration-4",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-5",
+      "source": "architecture-integrations-n1",
+      "target": "integration-5"
+    },
+    {
+      "id": "integration-out-5",
+      "source": "integration-5",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-5",
+      "source": "integration-5",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-6",
+      "source": "architecture-integrations-n1",
+      "target": "integration-6"
+    },
+    {
+      "id": "integration-out-6",
+      "source": "integration-6",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-6",
+      "source": "integration-6",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-7",
+      "source": "architecture-integrations-n1",
+      "target": "integration-7"
+    },
+    {
+      "id": "integration-out-7",
+      "source": "integration-7",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-7",
+      "source": "integration-7",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-8",
+      "source": "architecture-integrations-n1",
+      "target": "integration-8"
+    },
+    {
+      "id": "integration-out-8",
+      "source": "integration-8",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-8",
+      "source": "integration-8",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-9",
+      "source": "architecture-integrations-n1",
+      "target": "integration-9"
+    },
+    {
+      "id": "integration-out-9",
+      "source": "integration-9",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-9",
+      "source": "integration-9",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-10",
+      "source": "architecture-integrations-n1",
+      "target": "integration-10"
+    },
+    {
+      "id": "integration-out-10",
+      "source": "integration-10",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-10",
+      "source": "integration-10",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-11",
+      "source": "architecture-integrations-n1",
+      "target": "integration-11"
+    },
+    {
+      "id": "integration-out-11",
+      "source": "integration-11",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-11",
+      "source": "integration-11",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-12",
+      "source": "architecture-integrations-n1",
+      "target": "integration-12"
+    },
+    {
+      "id": "integration-out-12",
+      "source": "integration-12",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-12",
+      "source": "integration-12",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-13",
+      "source": "architecture-integrations-n1",
+      "target": "integration-13"
+    },
+    {
+      "id": "integration-out-13",
+      "source": "integration-13",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-13",
+      "source": "integration-13",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-14",
+      "source": "architecture-integrations-n1",
+      "target": "integration-14"
+    },
+    {
+      "id": "integration-out-14",
+      "source": "integration-14",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-14",
+      "source": "integration-14",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-15",
+      "source": "architecture-integrations-n1",
+      "target": "integration-15"
+    },
+    {
+      "id": "integration-out-15",
+      "source": "integration-15",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-15",
+      "source": "integration-15",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-16",
+      "source": "architecture-integrations-n1",
+      "target": "integration-16"
+    },
+    {
+      "id": "integration-out-16",
+      "source": "integration-16",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-16",
+      "source": "integration-16",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-17",
+      "source": "architecture-integrations-n1",
+      "target": "integration-17"
+    },
+    {
+      "id": "integration-out-17",
+      "source": "integration-17",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-17",
+      "source": "integration-17",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-18",
+      "source": "architecture-integrations-n1",
+      "target": "integration-18"
+    },
+    {
+      "id": "integration-out-18",
+      "source": "integration-18",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-18",
+      "source": "integration-18",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    },
+    {
+      "id": "integration-in-19",
+      "source": "architecture-integrations-n1",
+      "target": "integration-19"
+    },
+    {
+      "id": "integration-out-19",
+      "source": "integration-19",
+      "target": "architecture-integrations-n2",
+      "label": "Provider response"
+    },
+    {
+      "id": "integration-error-19",
+      "source": "integration-19",
+      "target": "architecture-integrations-error",
+      "failure": true,
+      "label": "Provider unavailable"
+    }
+  ],
+  "notes": [
+    "Source implementation is documented; deployed configuration and provider connectivity are not verified.",
+    "All listed adapters have code evidence. Runtime configuration is Unverified because this task does not read production secrets or call live providers. No integration is labeled Configured without configuration evidence."
+  ]
+}
